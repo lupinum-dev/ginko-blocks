@@ -1,8 +1,8 @@
 
 <h1 align="center">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="/logo_dark.svg">
-  <img width="250" alt="Logo of Ginko Blocks from Lupinum OG" src="/logo_light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="/_assets/logo_dark.svg">
+  <img width="250" alt="Logo of Ginko Blocks from Lupinum OG" src="/_assets/logo_light.svg">
 </picture>
 </h1>
 
@@ -49,7 +49,7 @@ Find detailed guides and examples in our [official documentation](https://ginko.
 ## 💬 Community
 
 <a href="https://discord.gg/SSGK5tuqJh">
-<img width="400" src="/discord.png"></a>
+<img width="400" src="/_assets/discord.png"></a>
 
 - Get help and support
 - Share your creations
@@ -61,7 +61,7 @@ Find detailed guides and examples in our [official documentation](https://ginko.
 ## 🌐 Discover Ginko Web
 
 <a href="https://ginko.build/how-it-works">
-<img width="400" src="/ginko_web.png"></a>
+<img width="400" src="/_assets/ginko_web.png"></a>
 
 Ginko Web connects Obsidian's writing capabilities with professional web publishing. Build modern static websites while keeping your content in Obsidian.
 
