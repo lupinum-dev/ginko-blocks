@@ -1,10 +1,10 @@
 {
-  "id": "sample-plugin",
-  "name": "Sample Plugin",
-  "version": "1.0.0",
+  "id": "ginko-blocks",
+  "name": "Ginko Blocks",
+  "version": "0.0.1",
   "minAppVersion": "0.15.0",
-  "description": "Demonstrates some of the capabilities of the Obsidian API.",
-  "author": "Obsidian",
+  "description": "Native-like components that enhance your Obsidian experience: Tabs, Column Layout, Steps, Image Gallery, File Tree, ..",
+  "author": "Lupinum OG",
   "authorUrl": "https://obsidian.md",
   "fundingUrl": "https://obsidian.md/pricing",
   "isDesktopOnly": false
