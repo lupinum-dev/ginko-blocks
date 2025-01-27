@@ -48,15 +48,20 @@ Find detailed guides and examples in our [official documentation](https://ginko.
 
 ## 💬 Community
 
-Join our [Discord community](https://discord.gg/SSGK5tuqJh) to:
+<a href="https://discord.gg/SSGK5tuqJh">
+<img width="400" src="/discord.png"></a>
+
 - Get help and support
 - Share your creations
 - Connect with other users
 - Stay updated on new features
 
+[Join here](https://discord.gg/SSGK5tuqJh)
+
 ## 🌐 Discover Ginko Web
 
-Stop Wrestling with Your CMS - Start Creating Again
+<a href="https://ginko.build/how-it-works">
+<img width="400" src="/ginko_web.png"></a>
 
 Ginko Web connects Obsidian's writing capabilities with professional web publishing. Build modern static websites while keeping your content in Obsidian.
 
