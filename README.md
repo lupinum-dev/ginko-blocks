@@ -1,4 +1,3 @@
-
 <h1 align="center">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="/_assets/logo_dark.svg">
@@ -14,7 +13,7 @@
 
 ## 👋 Introduction
 
-Ginko Blocks brings high-quality interface elements to Obsidian your favorite Markdown Editor. 
+Ginko Blocks brings high-quality interface elements to Obsidian your favorite Markdown Editor.
 We aim to match Obsidian's native feel while adding powerful features like tabs, steps, column layouts, file trees, and more.
 
 ## ✨ Key Features
@@ -77,10 +76,6 @@ We welcome contributions! Feel free to:
 
 📄 License
 
-Licensed under the Apache License, Version 2.0 
+Licensed under the Apache License, Version 2.0
 
 Copyright 2024 <a href="www.lupinum.com">Lupinum OG</a>
-
-
-
-
