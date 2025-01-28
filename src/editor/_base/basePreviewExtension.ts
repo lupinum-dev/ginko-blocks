@@ -23,8 +23,8 @@ export interface BaseUpdateContext<T extends WidgetType> {
  * Configuration for creating a preview extension
  */
 export interface PreviewExtensionConfig {
-  startTag: string // e.g., "++center"
-  endTag: string // e.g., "++"
+  startTag: string // e.g., "::center"
+  endTag: string // e.g., "::"
   fieldName: string // e.g., "centerPreview"
 }
 
@@ -251,7 +251,7 @@ export abstract class BasePreviewExtension<T extends WidgetType> {
       const lineStart = currentPos
 
       // Check for end tags first
-      if (line.trim() === '++') {
+      if (line.trim() === '::') {
         if (stack.length > 0) {
           nestingLevel--
           const lastTag = stack.pop()
@@ -267,7 +267,7 @@ export abstract class BasePreviewExtension<T extends WidgetType> {
         }
       }
       // Then check for start tags
-      else if (line.trim().startsWith('++')) {
+      else if (line.trim().startsWith('::')) {
         const tagName = line.trim().split(/[\s(]/)[0] // Get the tag name before any parameters
 
         if (contentStart === -1) {

@@ -52,7 +52,7 @@ export default class GinkoBlocksPlugin extends Plugin {
     // this.registerEditorExtension(createStepsPreviewExtension(this.app));
     // this.registerEditorExtension(createNoLineBreaksExtension());
     // this.registerEditorExtension(createGalleryPreviewExtension(this.app));
-    // this.registerEditorExtension(createAspectPreviewExtension(this.app))
+    this.registerEditorExtension(createAspectPreviewExtension(this.app))
   }
 
   onunload() {

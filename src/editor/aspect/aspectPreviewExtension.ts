@@ -9,8 +9,8 @@ export const toggleAspectEditEffect = StateEffect.define<{ id: string, value: bo
 export class AspectPreviewExtension extends BasePreviewExtension<AspectWidget> {
   constructor(app: App) {
     super(app, {
-      startTag: '++aspect',
-      endTag: '++',
+      startTag: '::aspect',
+      endTag: '::',
       fieldName: 'aspectPreview',
     })
   }
@@ -25,7 +25,7 @@ export class AspectPreviewExtension extends BasePreviewExtension<AspectWidget> {
 
   protected shouldProcessContent(content: string): boolean {
     // Check if content contains an image and aspect ratio
-    return content.includes('++aspect') && /!\[[^\]]*\]\([^)]+\)/.test(content)
+    return content.includes('::aspect') && /!\[[^\]]*\]\([^)]+\)/.test(content)
   }
 
   protected processContentBlock(content: string, startPos: number, endPos: number): void {
