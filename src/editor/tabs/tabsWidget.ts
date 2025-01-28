@@ -39,9 +39,6 @@ export class TabWidget extends BaseWidget {
   private readonly properties: BlockProperties
   private activeTab: number
   private isEditing: boolean
-  private readonly app: App
-  private readonly id: string
-  private readonly content: string
   static readonly toggleEdit = StateEffect.define<boolean>()
 
   constructor(content: string, id: string, isEditing: boolean, app: App) {
@@ -108,8 +105,8 @@ export class TabWidget extends BaseWidget {
     let currentTab: { properties: TabProperties, content: string[] } | null = null
 
     for (const line of lines) {
-      // Fix regex to avoid backtracking issues
-      const tabMatch = line.trim().match(/^--tab(?:\((.*?)\))?(.*)$/)
+      // Match tab line with or without space after --tab
+      const tabMatch = line.trim().match(/^--tab\s*(?:(\(.*?\))\s*)?(.*)$/)
 
       if (tabMatch) {
         if (currentTab) {
@@ -145,7 +142,7 @@ export class TabWidget extends BaseWidget {
       })
     }
 
-    return tabs as readonly TabData[]
+    return Object.freeze(tabs)
   }
 
   eq(other: TabWidget): boolean {
@@ -241,7 +238,7 @@ export class TabWidget extends BaseWidget {
       const content = this.createTabContent(tab, index)
 
       const markdownChild = new MarkdownRenderChild(content)
-      console.warn('Rendering tab content:', tab.content.trim())
+      console.log('🔴 Rendering tab content:', tab.content.trim())
       MarkdownRenderer.render(
         this.app,
         tab.content.trim(),

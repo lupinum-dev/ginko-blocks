@@ -1,11 +1,33 @@
-import type { Extension, StateEffect, Transaction } from '@codemirror/state'
-import type { DecorationSet, ViewUpdate, WidgetType } from '@codemirror/view'
+import type {
+  Extension,
+  StateEffect,
+  Transaction,
+} from '@codemirror/state'
+import type {
+  DecorationSet,
+  ViewUpdate,
+  WidgetType,
+} from '@codemirror/view'
 import type { App } from 'obsidian'
 import type { CursorLocation, RegionData } from '../utils'
-import { RangeSetBuilder, StateField } from '@codemirror/state'
-import { Decoration, EditorView } from '@codemirror/view'
+import {
+  RangeSetBuilder,
+  StateField,
+} from '@codemirror/state'
+import {
+  Decoration,
+  EditorView,
+} from '@codemirror/view'
 import { editorLivePreviewField } from 'obsidian'
-import { checkCursorInRegion, collectExistingWidgets, getCursorLocations, getRegionByTags, hashContent } from '../utils'
+import {
+  checkCursorInRegion,
+  collectExistingWidgets,
+
+  getCursorLocations,
+  getRegionByTags,
+  hashContent,
+
+} from '../utils'
 
 /**
  * Base interface for update context shared across all preview extensions
@@ -23,8 +45,8 @@ export interface BaseUpdateContext<T extends WidgetType> {
  * Configuration for creating a preview extension
  */
 export interface PreviewExtensionConfig {
-  startTag: string // e.g., "::center"
-  endTag: string // e.g., "::"
+  startTag: string // e.g., "++center"
+  endTag: string // e.g., "++"
   fieldName: string // e.g., "centerPreview"
 }
 
@@ -316,6 +338,7 @@ export abstract class BasePreviewExtension<T extends WidgetType> {
           this.processContentBlock(parseResult.content, nextTag, parseResult.endPos)
         }
       }
+
       pos = parseResult ? parseResult.endPos : nextTag + this.config.startTag.length
     }
   }

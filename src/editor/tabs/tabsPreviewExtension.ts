@@ -13,7 +13,7 @@ export const toggleTabEdit = StateEffect.define<{ id: string, value: boolean }>(
 /**
  * Extension for handling tab preview functionality
  */
-export class TabPreviewExtension extends BasePreviewExtension<TabWidget> {
+class TabPreviewExtension extends BasePreviewExtension<TabWidget> {
   constructor(app: App) {
     const config: PreviewExtensionConfig = {
       startTag: '::tabs',
@@ -24,7 +24,7 @@ export class TabPreviewExtension extends BasePreviewExtension<TabWidget> {
   }
 
   // Override shouldProcessContent for tabs-specific logic
-  protected shouldProcessContent(_content: string): boolean {
+  protected shouldProcessContent(content: string): boolean {
     // For tabs, we always want to process the content
     // The nested steps will be handled by the steps extension
     return true
@@ -32,10 +32,6 @@ export class TabPreviewExtension extends BasePreviewExtension<TabWidget> {
 
   protected createWidget(content: string, id: string, isEditing: boolean, app: App): TabWidget {
     return new TabWidget(content, id, isEditing, app)
-  }
-
-  protected processContentBlock(content: string): string {
-    return content
   }
 
   protected isToggleEditEffect(effect: StateEffect<unknown>): effect is StateEffect<{ id: string, value: boolean }> {
