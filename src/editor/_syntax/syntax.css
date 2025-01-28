@@ -1,0 +1,62 @@
+/* Base marker styles */
+.ginko-blocks-syntax-marker {
+  display: inline-block;
+  padding: 0px 8px;
+  border-radius: 6px;
+  font-family: var(--font-monospace);
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+/* Main syntax markers */
+.ginko-blocks-syntax-start {
+  color: #1976d2;
+  background: linear-gradient(to right, rgba(25, 118, 210, 0.08), rgba(25, 118, 210, 0.12));
+  border: 1px solid rgba(25, 118, 210, 0.2);
+}
+
+.ginko-blocks-syntax-middle {
+  color: #2e7d32;
+  background: linear-gradient(to right, rgba(46, 125, 50, 0.08), rgba(46, 125, 50, 0.12));
+  border: 1px solid rgba(46, 125, 50, 0.2);
+}
+
+.ginko-blocks-syntax-end {
+  color: #d32f2f;
+  background: linear-gradient(to right, rgba(211, 47, 47, 0.08), rgba(211, 47, 47, 0.12));
+  border: 1px solid rgba(211, 47, 47, 0.2);
+}
+
+/* Props container with gradient */
+.ginko-blocks-syntax-props-container {
+  display: inline-block;
+  padding: 0px 8px;
+  border-radius: 6px;
+  font-family: var(--font-monospace);
+  background: linear-gradient(to right, rgba(128, 128, 128, 0.08), rgba(128, 128, 128, 0.12));
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+/* Individual props styling */
+.ginko-blocks-syntax-prop-boolean {
+  color: #7c4dff;  /* Purple for boolean props */
+  font-style: normal;
+}
+
+.ginko-blocks-syntax-prop-name {
+  color: #42b883;  /* Vue green for prop names */
+  font-style: italic;
+}
+
+.ginko-blocks-syntax-prop-equals {
+  color: #888;     /* Gray for equals sign */
+  margin: 0 2px;
+}
+
+.ginko-blocks-syntax-prop-value {
+  color: #c41e3a;  /* Crimson for string values */
+  font-style: normal;
+}

@@ -1,8 +1,8 @@
 import type { EditorView } from '@codemirror/view'
-import type { BaseWidgetConfig } from './BaseWidget'
+import type { BaseWidgetConfig } from '../_base/baseWidget'
 import { MarkdownRenderChild, MarkdownRenderer } from 'obsidian'
-import { toggleAspectEditEffect } from './AspectPreviewExtension'
-import { BaseWidget } from './BaseWidget'
+import { BaseWidget } from '../_base/baseWidget'
+import { toggleAspectEditEffect } from './aspectPreviewExtension'
 
 type AspectRatio = 'square' | 'video' | 'mobile' | 'photo' | 'portrait' | 'landscape'
 

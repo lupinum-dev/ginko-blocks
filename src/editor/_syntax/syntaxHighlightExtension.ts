@@ -1,18 +1,7 @@
-import type {
-  Transaction,
-} from '@codemirror/state'
-import type {
-  DecorationSet,
-} from '@codemirror/view'
-import {
-  Extension,
-  RangeSetBuilder,
-  StateField,
-} from '@codemirror/state'
-import {
-  Decoration,
-  EditorView,
-} from '@codemirror/view'
+import type { Transaction } from '@codemirror/state'
+import type { DecorationSet } from '@codemirror/view'
+import { Extension, RangeSetBuilder, StateField } from '@codemirror/state'
+import { Decoration, EditorView } from '@codemirror/view'
 
 // Create decorations with specific classes
 function createDecoration(className: string) {
@@ -23,21 +12,21 @@ function createDecoration(className: string) {
 
 // Define our decoration types
 const decorations = {
-  startMarker: (category: string) => createDecoration(`syntax-marker syntax-start syntax-${category}`),
-  middleMarker: (category: string) => createDecoration(`syntax-marker syntax-middle syntax-${category}`),
-  endMarker: () => createDecoration('syntax-marker syntax-end'),
-  propsContainer: (category: string) => createDecoration(`syntax-props-container syntax-${category}`),
-  booleanProp: (category: string) => createDecoration(`syntax-prop-boolean syntax-${category}`),
-  propName: (category: string) => createDecoration(`syntax-prop-name syntax-${category}`),
-  propEquals: (category: string) => createDecoration(`syntax-prop-equals syntax-${category}`),
-  propValue: (category: string) => createDecoration(`syntax-prop-value syntax-${category}`),
+  startMarker: (category: string) => createDecoration(`ginko-blocks-syntax-marker ginko-blocks-syntax-start ginko-blocks-syntax-${category}`),
+  middleMarker: (category: string) => createDecoration(`ginko-blocks-syntax-marker ginko-blocks-syntax-middle ginko-blocks-syntax-${category}`),
+  endMarker: () => createDecoration('ginko-blocks-syntax-marker ginko-blocks-syntax-end'),
+  propsContainer: (category: string) => createDecoration(`ginko-blocks-syntax-props-container ginko-blocks-syntax-${category}`),
+  booleanProp: (category: string) => createDecoration(`ginko-blocks-syntax-prop-boolean ginko-blocks-syntax-${category}`),
+  propName: (category: string) => createDecoration(`ginko-blocks-syntax-prop-name ginko-blocks-syntax-${category}`),
+  propEquals: (category: string) => createDecoration(`ginko-blocks-syntax-prop-equals ginko-blocks-syntax-${category}`),
+  propValue: (category: string) => createDecoration(`ginko-blocks-syntax-prop-value ginko-blocks-syntax-${category}`),
 }
 
 // Syntax patterns
 const patterns = {
-  start: /^(::|\+\+)(\w+)(?:\((.*)\))?$/,
+  start: /^(::)(\w+)(?:\((.*)\))?$/,
   middle: /^(--\w+)(?:\((.*)\))?(.*)$/,
-  end: /^(::|\+\+)$/,
+  end: /^(::|)$/,
 }
 
 // Helper class to manage decorations and ensure proper sorting

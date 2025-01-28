@@ -1,6 +1,8 @@
 import type { App, Editor } from 'obsidian'
 import type { GinkoBlocksSettings } from './settings/settings'
 import { MarkdownView, Modal, Notice, Plugin, Setting } from 'obsidian'
+import { syntaxHighlightField } from './editor/_syntax/syntaxHighlightExtension'
+import { createAspectPreviewExtension } from './editor/aspect/aspectPreviewExtension'
 import { DEFAULT_SETTINGS, GinkoBlocksSettingTab } from './settings/settings'
 import { CURRENT_WELCOME_VERSION, WELCOME_VIEW_TYPE, WelcomeView } from './welcome/welcomeView'
 
@@ -17,6 +19,8 @@ export default class GinkoBlocksPlugin extends Plugin {
       WELCOME_VIEW_TYPE,
       leaf => new WelcomeView(leaf),
     )
+
+    this.registerEditorExtensions()
 
     // Show welcome view on first load
     await this.activateWelcomeView()
@@ -36,6 +40,19 @@ export default class GinkoBlocksPlugin extends Plugin {
 
     // This adds a settings tab so the user can configure various aspects of the plugin
     this.addSettingTab(new GinkoBlocksSettingTab(this.app, this))
+  }
+
+  /**
+   * Registers editor extensions
+   */
+  private registerEditorExtensions() {
+    // this.registerEditorExtension(createTabPreviewExtension(this.app));
+    this.registerEditorExtension(syntaxHighlightField)
+    // this.registerEditorExtension(createLayoutPreviewExtension(this.app));
+    // this.registerEditorExtension(createStepsPreviewExtension(this.app));
+    // this.registerEditorExtension(createNoLineBreaksExtension());
+    // this.registerEditorExtension(createGalleryPreviewExtension(this.app));
+    // this.registerEditorExtension(createAspectPreviewExtension(this.app))
   }
 
   onunload() {

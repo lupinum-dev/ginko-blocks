@@ -2,7 +2,7 @@ import type { EditorView } from '@codemirror/view'
 import type { App } from 'obsidian'
 import crypto from 'node:crypto'
 import { WidgetType } from '@codemirror/view'
-import { hashContent, logDebug } from './utils'
+import { hashContent, logDebug } from '../utils'
 
 export interface BaseWidgetConfig {
   content: string

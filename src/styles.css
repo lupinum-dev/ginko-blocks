@@ -8,5 +8,6 @@
 @import url("src/welcome/welcome.css");
 @import url("src/settings/settings.css");
 @import url("src/settings/resetModal.css");
+@import url("src/editor/_syntax/syntax.css");
 
 

@@ -23,6 +23,7 @@ const context = await esbuild.context({
     './src/styles.css',
   ],
   bundle: true,
+  platform: 'node',
   external: [
     'obsidian',
     'electron',

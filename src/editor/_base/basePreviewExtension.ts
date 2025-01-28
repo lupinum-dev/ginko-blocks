@@ -1,33 +1,11 @@
-import type {
-  Extension,
-  StateEffect,
-  Transaction,
-} from '@codemirror/state'
-import type {
-  DecorationSet,
-  ViewUpdate,
-  WidgetType,
-} from '@codemirror/view'
+import type { Extension, StateEffect, Transaction } from '@codemirror/state'
+import type { DecorationSet, ViewUpdate, WidgetType } from '@codemirror/view'
 import type { App } from 'obsidian'
-import type { CursorLocation, RegionData } from './utils'
-import {
-  RangeSetBuilder,
-  StateField,
-} from '@codemirror/state'
-import {
-  Decoration,
-  EditorView,
-} from '@codemirror/view'
+import type { CursorLocation, RegionData } from '../utils'
+import { RangeSetBuilder, StateField } from '@codemirror/state'
+import { Decoration, EditorView } from '@codemirror/view'
 import { editorLivePreviewField } from 'obsidian'
-import {
-  checkCursorInRegion,
-  collectExistingWidgets,
-
-  getCursorLocations,
-  getRegionByTags,
-  hashContent,
-
-} from './utils'
+import { checkCursorInRegion, collectExistingWidgets, getCursorLocations, getRegionByTags, hashContent } from '../utils'
 
 /**
  * Base interface for update context shared across all preview extensions
