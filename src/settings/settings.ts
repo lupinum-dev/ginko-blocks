@@ -15,8 +15,10 @@ export interface GinkoBlocksSettings {
     layout: boolean
     steps: boolean
     tabs: boolean
-    iconify: boolean
     [key: string]: boolean
+  }
+  utilities: {
+    iconify: boolean
   }
   mySetting: string
 }
@@ -32,6 +34,8 @@ export const DEFAULT_SETTINGS: GinkoBlocksSettings = {
     layout: false,
     steps: false,
     tabs: false,
+  },
+  utilities: {
     iconify: false,
   },
   mySetting: 'default',
@@ -179,8 +183,13 @@ export class GinkoBlocksSettingTab extends PluginSettingTab {
       {
         id: 'iconify',
         name: 'Iconify Icons',
-        description: 'Extend the standard Lucide icons with 200,000+ ready-to-use icons from Iconify. Browse available icons at icones.js.org',
-        docLink: '/iconify',
+        description: 'Extend the standard Lucide icons with 200,000+ ready-to-use icons from Iconify.',
+        warning: 'Note: This feature makes network requests to the Iconify API to fetch icons.',
+        links: [
+          { text: 'Read our documentation', url: 'https://ginko.build/docs/utilities/iconify' },
+          { text: 'Browse available icons', url: 'https://icones.js.org/' },
+          { text: 'Learn more about Iconify', url: 'https://iconify.design/' },
+        ],
       },
     ]
 
@@ -189,16 +198,22 @@ export class GinkoBlocksSettingTab extends PluginSettingTab {
       setting.setName(utility.name)
       setting.setDesc(createFragment((el) => {
         el.createSpan({ text: utility.description })
-        el.createEl('a', {
-          text: 'Read documentation',
-          cls: 'ginko-blocks-settings-doc-link',
-          href: `https://ginko.build/docs/utilities/${utility.docLink}`,
+
+        el.createEl('em', { text: utility.warning, cls: 'mod-warning' })
+
+        const linksContainer = el.createDiv({ cls: 'links-container' })
+        utility.links.forEach((link) => {
+          linksContainer.createEl('a', {
+            text: link.text,
+            cls: 'ginko-blocks-settings-doc-link',
+            href: link.url,
+          })
         })
       }))
       setting.addToggle(toggle => toggle
-        .setValue(this.plugin.settings.components[utility.id])
+        .setValue(this.plugin.settings.utilities[utility.id])
         .onChange(async (value) => {
-          this.plugin.settings.components[utility.id] = value
+          this.plugin.settings.utilities[utility.id] = value
           await this.plugin.saveSettings()
         }))
     })

@@ -88,14 +88,15 @@
 /* Component Documentation Links */
 .ginko-blocks-settings-doc-link {
   display: inline-block;
-  padding: 0.2rem 0.6rem;
+  padding: 0.3rem 0.8rem;
   border-radius: 4px;
   font-size: 0.85em;
+  max-width: 25%;
   color: var(--text-accent);
   background: var(--background-modifier-border);
   text-decoration: none;
   transition: all 0.2s ease;
-  width: fit-content;
+  white-space: nowrap;
 }
 
 .ginko-blocks-settings-doc-link:hover {
@@ -135,22 +136,39 @@
 
 /* Component Settings */
 .setting-item.mod-toggle .setting-item-info {
-  padding-right: 2rem;
+  padding-right: 2.5rem;
 }
 
 .setting-item-description {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  color: var(--text-muted);
+  gap: 0.8rem;
+}
+
+/* Warning text styling */
+.setting-item-description .mod-warning {
+  color: var(--text-warning);
   font-size: 0.9em;
-  line-height: 1.4;
+}
+
+/* Links container */
+.setting-item-description .links-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Separator dot styling */
+.links-container .separator {
+  color: var(--text-muted);
+  margin: 0 0.2rem;
 }
 
 /* Improve toggle spacing */
 .setting-item.mod-toggle {
+  padding: 1.2rem 0;
   border-top: 1px solid var(--background-modifier-border);
-  padding: 1rem 0;
 }
 
 .setting-item.mod-toggle:first-child {
