@@ -1,5 +1,5 @@
-import type { EditorView } from '@codemirror/view'
 import type { BaseWidgetConfig } from '../_base/baseWidget'
+import { EditorView } from '@codemirror/view'
 import { MarkdownRenderChild, MarkdownRenderer } from 'obsidian'
 import { BaseWidget } from '../_base/baseWidget'
 import { toggleAspectEditEffect } from './aspectPreviewExtension'
@@ -72,9 +72,27 @@ export class AspectWidget extends BaseWidget {
     container.appendChild(wrapper)
     container.appendChild(this.createEditButton((e) => {
       e.preventDefault()
-      view.dispatch({
-        effects: [toggleAspectEditEffect.of({ id: this.id, value: true })],
-      })
+
+      // Find the position of this widget in the document
+      const widgetPos = view.posAtDOM(container)
+
+      // Find the position after the ::aspect line
+      const content = this.content
+      const aspectLineEnd = content.indexOf('\n')
+      if (aspectLineEnd !== -1) {
+        const cursorPos = widgetPos + aspectLineEnd + 1
+
+        // Set cursor position and scroll into view
+        view.dispatch({
+          selection: { anchor: cursorPos, head: cursorPos },
+          effects: [
+            toggleAspectEditEffect.of({ id: this.id, value: true }),
+            EditorView.scrollIntoView(cursorPos),
+          ],
+        })
+      }
+
+      view.focus()
     }))
 
     return container
