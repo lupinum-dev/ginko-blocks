@@ -4,6 +4,19 @@ import { PluginSettingTab, Setting } from 'obsidian'
 import { ResetModal } from './resetModal'
 import { ResetStorageModal } from './resetStorage'
 
+interface UtilityLink {
+  text: string
+  url: string
+}
+
+interface Utility {
+  id: keyof GinkoBlocksSettings['utilities']
+  name: string
+  description: string
+  warning: string
+  links: UtilityLink[]
+}
+
 export interface GinkoBlocksSettings {
   components: {
     aspectImage: boolean
@@ -19,6 +32,7 @@ export interface GinkoBlocksSettings {
   }
   utilities: {
     iconify: boolean
+    [key: string]: boolean
   }
   mySetting: string
 }
@@ -82,8 +96,6 @@ export class GinkoBlocksSettingTab extends PluginSettingTab {
     const discordList = discordDiv.createEl('ul')
     const discordItems = [
       'Get help and support',
-      'Share your creations',
-      'Connect with other users',
       'Stay updated on new features',
     ]
     discordItems.forEach((item) => {
@@ -161,8 +173,17 @@ export class GinkoBlocksSettingTab extends PluginSettingTab {
       const setting = new Setting(containerEl)
       setting.setName(component.name)
       setting.setDesc(createFragment((el) => {
-        el.createSpan({ text: component.description })
-        el.createEl('a', {
+        // Create description container
+        const descContainer = el.createDiv({ cls: 'ginko-blocks-settings-description-container' })
+
+        // Add description text
+        descContainer.createDiv({
+          text: component.description,
+          cls: 'ginko-blocks-settings-component-description',
+        })
+
+        // Add documentation link
+        descContainer.createEl('a', {
           text: 'Read documentation',
           cls: 'ginko-blocks-settings-doc-link',
           href: `https://ginko.build/docs/components/${component.docLink}`,
@@ -179,7 +200,7 @@ export class GinkoBlocksSettingTab extends PluginSettingTab {
     // Add Utilities Section
     containerEl.createEl('h2', { text: 'Utilities' })
 
-    const utilities = [
+    const utilities: Utility[] = [
       {
         id: 'iconify',
         name: 'Iconify Icons',
@@ -197,18 +218,34 @@ export class GinkoBlocksSettingTab extends PluginSettingTab {
       const setting = new Setting(containerEl)
       setting.setName(utility.name)
       setting.setDesc(createFragment((el) => {
-        el.createSpan({ text: utility.description })
+        // Create main description container
+        const descContainer = el.createDiv({ cls: 'ginko-blocks-settings-description-container' })
 
-        el.createEl('em', { text: utility.warning, cls: 'mod-warning' })
-
-        const linksContainer = el.createDiv({ cls: 'links-container' })
-        utility.links.forEach((link) => {
-          linksContainer.createEl('a', {
-            text: link.text,
-            cls: 'ginko-blocks-settings-doc-link',
-            href: link.url,
-          })
+        // Add main description text
+        descContainer.createDiv({
+          text: utility.description,
+          cls: 'ginko-blocks-settings-utility-description',
         })
+
+        // Add warning text if present
+        if (utility.warning) {
+          descContainer.createDiv({
+            text: utility.warning,
+            cls: ['ginko-blocks-settings-warning', 'mod-warning'],
+          })
+        }
+
+        // Add links if present
+        if (utility.links && utility.links.length > 0) {
+          const linksContainer = descContainer.createDiv({ cls: 'ginko-blocks-settings-links-container' })
+          utility.links.forEach((link) => {
+            linksContainer.createEl('a', {
+              text: link.text,
+              cls: 'ginko-blocks-settings-doc-link',
+              href: link.url,
+            })
+          })
+        }
       }))
       setting.addToggle(toggle => toggle
         .setValue(this.plugin.settings.utilities[utility.id])
@@ -236,6 +273,7 @@ export class GinkoBlocksSettingTab extends PluginSettingTab {
         }))
 
     // Move reset options inside dangerContent
+    dangerContent.createEl('h3', { text: 'Reset Components' })
     components.forEach((component) => {
       new Setting(dangerContent)
         .setName(`Reset ${component.name}`)
