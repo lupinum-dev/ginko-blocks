@@ -32,6 +32,8 @@ export interface GinkoBlocksSettings {
   }
   utilities: {
     iconify: boolean
+    syntaxHighlight: boolean
+    debug: boolean
     [key: string]: boolean
   }
   mySetting: string
@@ -51,6 +53,8 @@ export const DEFAULT_SETTINGS: GinkoBlocksSettings = {
   },
   utilities: {
     iconify: false,
+    syntaxHighlight: false,
+    debug: false,
   },
   mySetting: 'default',
 }
@@ -222,6 +226,22 @@ export class GinkoBlocksSettingTab extends PluginSettingTab {
           { text: 'Browse available icons', url: 'https://icones.js.org/' },
           { text: 'Learn more about Iconify', url: 'https://iconify.design/' },
         ],
+      },
+      {
+        id: 'syntaxHighlight',
+        name: 'Syntax Highlighting',
+        description: 'Enable syntax highlighting for code blocks and inline code.',
+        warning: '',
+        links: [
+          { text: 'Read our documentation', url: 'https://ginko.build/docs/utilities/syntax-highlight' },
+        ],
+      },
+      {
+        id: 'debug',
+        name: 'Debug Mode',
+        description: 'Enable debug logging to help troubleshoot issues.',
+        warning: 'Note: Enabling debug mode may affect performance and will output additional logs to the console.',
+        links: [],
       },
     ]
 
