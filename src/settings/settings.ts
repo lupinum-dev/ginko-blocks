@@ -200,6 +200,17 @@ export class GinkoBlocksSettingTab extends PluginSettingTab {
     // Add Utilities Section
     containerEl.createEl('h2', { text: 'Utilities' })
 
+    // Add Changelog Section
+    new Setting(containerEl)
+      .setName('Changelog & Updates')
+      .setDesc('View the latest changes and updates to Ginko Blocks')
+      .addButton(button => button
+        .setButtonText('Show Welcome & Changelog')
+        .onClick(async () => {
+          // Access the plugin instance to call activateWelcomeView
+          await this.plugin.activateWelcomeView(true)
+        }))
+
     const utilities: Utility[] = [
       {
         id: 'iconify',

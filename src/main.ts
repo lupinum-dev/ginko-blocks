@@ -2,7 +2,7 @@ import type { App, Editor } from 'obsidian'
 import type { GinkoBlocksSettings } from './settings/settings'
 import { MarkdownView, Modal, Notice, Plugin, Setting } from 'obsidian'
 import { DEFAULT_SETTINGS, GinkoBlocksSettingTab } from './settings/settings'
-import { WELCOME_VIEW_TYPE, WelcomeView } from './welcome/welcomeView'
+import { CURRENT_WELCOME_VERSION, WELCOME_VIEW_TYPE, WelcomeView } from './welcome/welcomeView'
 
 // Remember to rename these classes and interfaces!
 
@@ -19,25 +19,16 @@ export default class GinkoBlocksPlugin extends Plugin {
     )
 
     // Show welcome view on first load
-    if (!localStorage.getItem('ginko-blocks-welcome-shown')) {
-      await this.activateWelcomeView()
-    }
+    await this.activateWelcomeView()
 
     // Add command to show welcome view
     this.addCommand({
       id: 'show-welcome-view',
       name: 'Show Welcome View',
       callback: () => {
-        this.activateWelcomeView()
+        this.activateWelcomeView(true) // Force show even if seen
       },
     })
-
-    // This creates an icon in the left ribbon.
-    const ribbonIconEl = this.addRibbonIcon('sparkle', 'Ginko Blocks', async () => {
-      await this.activateWelcomeView()
-    })
-    // Perform additional things with the ribbon
-    ribbonIconEl.addClass('ginko-blocks-ribbon-class')
 
     // This adds a status bar item to the bottom of the app. Does not work on mobile apps.
     const statusBarItemEl = this.addStatusBarItem()
@@ -107,7 +98,14 @@ export default class GinkoBlocksPlugin extends Plugin {
     await this.saveData(this.settings)
   }
 
-  async activateWelcomeView() {
+  async activateWelcomeView(forceShow = false) {
+    const storageKey = `ginko-blocks-welcome-shown-v${CURRENT_WELCOME_VERSION}`
+
+    // Don't show if user has already seen this version (unless forced)
+    if (!forceShow && localStorage.getItem(storageKey)) {
+      return
+    }
+
     const { workspace } = this.app
 
     // First check if view is already open

@@ -2,6 +2,8 @@ import type { WorkspaceLeaf } from 'obsidian'
 import { ItemView, MarkdownRenderer } from 'obsidian'
 
 export const WELCOME_VIEW_TYPE = 'ginko-blocks-welcome-view'
+export const CURRENT_WELCOME_VERSION = '0.0.1' // Increment this when you want to show the welcome screen again
+const STORAGE_KEY = `ginko-blocks-welcome-shown-v${CURRENT_WELCOME_VERSION}`
 
 export class WelcomeView extends ItemView {
   constructor(leaf: WorkspaceLeaf) {
@@ -48,23 +50,14 @@ Get started with our comprehensive documentation. Learn about component usage, e
       '',
       this,
     )
-
-    // Add "Don't show again" button
-    const footerDiv = container.createDiv('ginko-blocks-welcome-footer')
-    const button = footerDiv.createEl('button', {
-      text: 'Don\'t show again',
-      cls: 'mod-cta',
-    })
-
-    button.addEventListener('click', () => {
-      localStorage.setItem('ginko-blocks-welcome-shown', 'true')
-      this.leaf.detach()
-    })
   }
 
   async onClose() {
     // Clean up by emptying the container
     const container = this.containerEl.children[1] as HTMLElement
     container.empty()
+
+    // Mark as shown in local storage with version
+    localStorage.setItem(STORAGE_KEY, 'true')
   }
 }
