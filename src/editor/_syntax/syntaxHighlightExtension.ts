@@ -1,5 +1,6 @@
 import type { Transaction } from '@codemirror/state'
 import type { DecorationSet } from '@codemirror/view'
+import { syntaxTree } from '@codemirror/language'
 import { Extension, RangeSetBuilder, StateField } from '@codemirror/state'
 import { Decoration, EditorView } from '@codemirror/view'
 
@@ -135,6 +136,22 @@ function processProps(
   }
 }
 
+function isInCodeBlock(transaction: Transaction, pos: number): boolean {
+  const tree = syntaxTree(transaction.state)
+  let currentNode = tree.resolveInner(pos, 1)
+
+  // Check if we're inside a code block
+  while (currentNode) {
+    if (currentNode.type.name.includes('codeblock')
+      || currentNode.type.name.includes('code_block')
+      || currentNode.type.name.includes('HyperMD-codeblock')) {
+      return true
+    }
+    currentNode = currentNode.parent
+  }
+  return false
+}
+
 export const syntaxHighlightField = StateField.define<DecorationSet>({
   create() {
     return Decoration.none
@@ -145,6 +162,13 @@ export const syntaxHighlightField = StateField.define<DecorationSet>({
 
     for (let pos = 0; pos < tr.state.doc.length;) {
       const line = tr.state.doc.lineAt(pos)
+
+      // Skip if we're in a code block
+      if (isInCodeBlock(tr, line.from)) {
+        pos = line.to + 1
+        continue
+      }
+
       const text = line.text.trim()
 
       // Start marker

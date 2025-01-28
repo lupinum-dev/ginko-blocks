@@ -10,6 +10,7 @@ import type {
 } from '@codemirror/view'
 import type { App } from 'obsidian'
 import type { CursorLocation, RegionData } from '../utils'
+import { syntaxTree } from '@codemirror/language'
 import {
   RangeSetBuilder,
   StateField,
@@ -175,8 +176,15 @@ export abstract class BasePreviewExtension<T extends WidgetType> {
    * Determines if previews should be updated based on transaction
    */
   protected shouldUpdatePreviews(transaction: Transaction): boolean {
-    const shouldUpdate = transaction.state.field(editorLivePreviewField) !== false
-      && (transaction.docChanged || transaction.effects.length > 0 || !!transaction.selection)
+    // First check if live preview is enabled
+    if (transaction.state.field(editorLivePreviewField) === false) {
+      return false
+    }
+
+    // Check if we need to update based on changes
+    const shouldUpdate = transaction.docChanged
+      || transaction.effects.length > 0
+      || !!transaction.selection
 
     return shouldUpdate
   }
@@ -217,6 +225,11 @@ export abstract class BasePreviewExtension<T extends WidgetType> {
    * Creates a decoration for a single region
    */
   protected createDecoration(region: RegionData, context: BaseUpdateContext<T>): Decoration | null {
+    // First check if we're in a code block
+    if (this.isInCodeBlock(context.transaction, region.startIndex)) {
+      return null
+    }
+
     const cursorInRegion = checkCursorInRegion(
       region.startIndex,
       region.endIndex,
@@ -307,7 +320,15 @@ export abstract class BasePreviewExtension<T extends WidgetType> {
   }
 
   protected shouldProcessContent(content: string): boolean {
-    // Base implementation - should be overridden by specific extensions
+    // Check if we're inside a code block by looking at the document structure
+    const lines = content.split('\n')
+    const firstLine = lines[0].trim()
+
+    // If the content starts with ``` it's a code block, don't process
+    if (firstLine.startsWith('```')) {
+      return false
+    }
+
     return true
   }
 
@@ -341,5 +362,21 @@ export abstract class BasePreviewExtension<T extends WidgetType> {
 
       pos = parseResult ? parseResult.endPos : nextTag + this.config.startTag.length
     }
+  }
+
+  protected isInCodeBlock(transaction: Transaction, pos: number): boolean {
+    const tree = syntaxTree(transaction.state)
+    let currentNode = tree.resolveInner(pos, 1)
+
+    // Check if we're inside a code block
+    while (currentNode) {
+      if (currentNode.type.name.includes('codeblock')
+        || currentNode.type.name.includes('code_block')
+        || currentNode.type.name.includes('HyperMD-codeblock')) {
+        return true
+      }
+      currentNode = currentNode.parent
+    }
+    return false
   }
 }
