@@ -1,0 +1,119 @@
+/* Tab System Styles  */
+.ginko-tabs-container {
+  margin: -1.5rem 0;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 8px;
+  background: var(--background-primary);
+  overflow: hidden;
+  position: relative;
+}
+
+.ginko-tab-buttons {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem 0;
+  background: var(--background-secondary);
+  border-bottom: 1px solid var(--background-modifier-border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.ginko-tab-buttons::-webkit-scrollbar {
+  display: none;
+}
+
+.ginko-tab-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.9em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  position: relative;
+  bottom: -1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 12px;
+}
+
+
+.ginko-tab-icon {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 4px;
+}
+
+.ginko-tab-icon .iconify-icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+
+.ginko-tab-icon .svg-icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+
+.ginko-tab-text {
+  margin-left: 4px;
+}
+
+.ginko-tab-button:hover {
+  color: var(--text-normal);
+  background: var(--background-modifier-hover);
+}
+
+.ginko-tab-button.active {
+  background: var(--background-primary);
+  border-color: var(--background-modifier-border);
+  color: var(--text-accent);
+  font-weight: 600;
+}
+
+.ginko-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+
+/* Tab Content Styles */
+.ginko-tab-contents {
+  background: var(--background-primary);
+}
+
+.ginko-tab-content {
+  display: none;
+  line-height: 1.6;
+}
+
+.ginko-tab-content.active {
+  display: block;
+}
+
+
+/* Tab Editor */
+.ginko-tab-editor {
+  min-height: 1em;
+  padding: 4px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  outline: none;
+}
+
+.ginko-tab-editor:hover {
+  border-color: #ddd;
+}
+
+.ginko-tab-editor:focus {
+  border-color: #0366d6;
+}
