@@ -3,6 +3,7 @@ import type { GinkoBlocksSettings } from './settings/settings'
 import { MarkdownView, Modal, Notice, Plugin, Setting } from 'obsidian'
 import { syntaxHighlightField } from './editor/_syntax/syntaxHighlightExtension'
 import { createAspectPreviewExtension } from './editor/aspect/aspectPreviewExtension'
+import { createStepsPreviewExtension } from './editor/steps/stepsPreviewExtension'
 import { tabsProcessor } from './editor/tabs/tabsPostProcessor'
 import { createTabPreviewExtension } from './editor/tabs/tabsPreviewExtension'
 import { DEFAULT_SETTINGS, GinkoBlocksSettingTab } from './settings/settings'
@@ -52,7 +53,7 @@ export default class GinkoBlocksPlugin extends Plugin {
     this.registerMarkdownPostProcessor(tabsProcessor)
     this.registerEditorExtension(syntaxHighlightField)
     // this.registerEditorExtension(createLayoutPreviewExtension(this.app));
-    // this.registerEditorExtension(createStepsPreviewExtension(this.app));
+    this.registerEditorExtension(createStepsPreviewExtension(this.app))
     // this.registerEditorExtension(createNoLineBreaksExtension());
     // this.registerEditorExtension(createGalleryPreviewExtension(this.app));
     this.registerEditorExtension(createAspectPreviewExtension(this.app))
