@@ -1,0 +1,153 @@
+
+/* Layout System Styles */
+.ginko-layout-container {
+  position: relative;
+}
+
+/* Edit Button Styles */
+.edit-block-button {
+  position: absolute;
+  top: -28px; /* Position above the content instead of inside */
+  right: 8px;
+  opacity: 0;
+  visibility: hidden;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-s);
+  z-index: 10;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  background-color: var(--background-primary);
+}
+
+/* Adjust hover area to include the button */
+.ginko-layout-container:hover {
+  background-color: var(--background-secondary);
+}
+
+.ginko-layout-container {
+  background: var(--background-primary);
+  border-radius: 8px;
+  border: 1px solid var(--background-modifier-border);
+  transition: background-color 150ms ease-in-out;
+}
+
+
+.ginko-layout-columns {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+  margin: 0.5rem;
+}
+
+
+
+.ginko-layout-content {
+  width: 100%;
+  
+}
+
+/* Improve image handling in columns */
+.ginko-layout-content img,
+.ginko-layout-content video {
+  max-width: 100%;
+  height: auto;
+  display: block; /* Remove default inline spacing */
+  margin: 0 auto; /* Center images */
+}
+
+/* Remove edit button border */
+.ginko-layout-container .edit-block-button {
+  border: none;
+  opacity: 0;
+  transition: opacity 150ms ease-in-out;
+}
+
+.ginko-layout-container:hover .edit-block-button {
+  opacity: 1;
+}
+
+/* Center Widget Styles */
+.ginko-center-container {
+  position: relative;
+  margin: 1em auto;
+  padding: 0 1em;
+  text-align: center;
+  cursor: text; /* Show text cursor to indicate clickable */
+  transition: background-color 150ms ease-in-out;
+}
+
+.ginko-center-container:hover {
+  background-color: var(--background-secondary);
+}
+
+.ginko-center-content {
+  width: 100%;
+  text-align: center;
+  padding: 0 0.25em 0 0.25em;
+}
+
+.ginko-center-content > * {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+/* Center Container Sizes */
+.ginko-center-container.size-sm { max-width: 640px; }
+.ginko-center-container.size-base { max-width: 768px; }
+.ginko-center-container.size-md { max-width: 1024px; }
+.ginko-center-container.size-lg { max-width: 1280px; }
+.ginko-center-container.size-xl { max-width: 1536px; }
+
+
+
+/* Edit Button Styles */
+.edit-block-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  opacity: 0;
+  visibility: hidden; /* Add visibility property */
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-s);
+  z-index: 10;
+  transition: opacity 0.2s ease, visibility 0.2s ease; /* Add visibility to transition */
+  background-color: var(--background-primary);
+}
+
+.ginko-layout-container:hover .edit-block-button,
+.ginko-center-container:hover .edit-block-button,
+.ginko-tabs-container:hover .edit-block-button {
+  opacity: 0.8;
+  visibility: visible; /* Show button on hover */
+}
+
+.edit-block-button:hover {
+  opacity: 1;
+  background-color: var(--background-modifier-hover);
+}
+
+/* Remove edit button border and improve visibility */
+.ginko-center-container .edit-block-button {
+  border: none;
+  opacity: 0;
+  transition: opacity 150ms ease-in-out;
+}
+
+.ginko-center-container:hover .edit-block-button {
+  opacity: 1;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .ginko-layout-columns {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .ginko-layout-column {
+    width: 100% !important;
+  }
+}
