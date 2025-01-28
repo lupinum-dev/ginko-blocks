@@ -95,9 +95,3 @@
   padding: 1rem 2rem;
 }
 
-/* Modal title enhancement */
-.ginko-blocks-welcome-modal + .modal-title {
-  font-size: 1.5em;
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
