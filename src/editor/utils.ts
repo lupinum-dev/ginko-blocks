@@ -275,7 +275,7 @@ export function parseBlockProperties(line: string, pattern: RegExp): BlockProper
   if (!match || !match[1])
     return properties
 
-  const propString = match[1]
+  const propString = match[1].trim()
   // Match:
   // - key="value" (string properties)
   // - key=true|false (boolean properties)
@@ -314,15 +314,15 @@ export function parseTabProperties(tabLine: string): TabProperties {
   if (!titleMatch)
     return properties
 
-  // Set title properties
-  properties.rawTitle = titleMatch[2]?.trim() || ''
-  properties.title = cleanMarkdownString(properties.rawTitle)
-
-  // Parse other properties if they exist
+  // Parse properties if they exist
   if (titleMatch[1]) {
     const blockProps = parseBlockProperties(tabLine, /--tab\((.*?)\)/)
-    Object.assign(properties, blockProps)
+    Object.assign(properties, blockProps) // Make sure we merge all properties
   }
+
+  // Set title properties after merging other properties
+  properties.rawTitle = titleMatch[2]?.trim() || ''
+  properties.title = cleanMarkdownString(properties.rawTitle)
 
   return properties
 }

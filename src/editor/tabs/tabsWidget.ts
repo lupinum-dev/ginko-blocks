@@ -105,8 +105,8 @@ export class TabWidget extends BaseWidget {
     let currentTab: { properties: TabProperties, content: string[] } | null = null
 
     for (const line of lines) {
-      // Match tab line with or without space after --tab
-      const tabMatch = line.trim().match(/^--tab\s*(?:(\(.*?\))\s*)?(.*)$/)
+      // Match tab line with new syntax
+      const tabMatch = line.trim().match(/^--tab(?:\((.*?)\))?\s*(.*)$/)
 
       if (tabMatch) {
         if (currentTab) {
@@ -118,14 +118,10 @@ export class TabWidget extends BaseWidget {
         }
 
         // Parse properties from the captured group, if it exists
-        const properties = tabMatch[1] ? parseTabProperties(`--tab${tabMatch[1]}`) : {}
-
-        // Use the remaining text as title, if any
-        const rawTitle = tabMatch[2]?.trim() || properties.title || ''
-        const title = rawTitle // Keep raw title in properties
+        const properties = parseTabProperties(line)
 
         currentTab = {
-          properties: { ...properties, title, rawTitle },
+          properties,
           content: [],
         }
       }
@@ -134,6 +130,7 @@ export class TabWidget extends BaseWidget {
       }
     }
 
+    // Don't forget to add the last tab
     if (currentTab) {
       tabs.push({
         title: cleanMarkdownString(currentTab.properties.title || ''),
@@ -157,18 +154,23 @@ export class TabWidget extends BaseWidget {
     button.className = `ginko-tab-button${index === this.activeTab ? ' active' : ''}`
 
     // Create icon container
-    const iconName = tab.properties.icon || null
+    const iconName = tab.properties.icon
     if (iconName) {
-      const iconEl = await createIconElement(iconName)
-      if (iconEl) {
-        button.appendChild(iconEl)
+      try {
+        const iconEl = await createIconElement(iconName)
+        if (iconEl) {
+          button.appendChild(iconEl)
+        }
+      }
+      catch (error) {
+        console.warn('Failed to create icon:', error)
       }
     }
 
     // Create text container
     const textContainer = document.createElement('span')
     textContainer.className = 'ginko-tab-text'
-    textContainer.textContent = cleanMarkdownString(tab.properties.title || '')
+    textContainer.textContent = tab.title
     button.appendChild(textContainer)
 
     button.onclick = (e) => {

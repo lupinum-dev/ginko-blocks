@@ -23,6 +23,15 @@ class TabPreviewExtension extends BasePreviewExtension<TabWidget> {
     super(app, config)
   }
 
+  // Add this method to implement the abstract method
+  protected processContentBlock(content: string, startPos: number, endPos: number): void {
+    // Implementation for processing tab content blocks
+    const widget = this.createWidget(content, `tab-${startPos}`, false, this.app)
+    if (widget) {
+      // Handle the widget processing if needed
+    }
+  }
+
   // Override shouldProcessContent for tabs-specific logic
   protected shouldProcessContent(content: string): boolean {
     // For tabs, we always want to process the content
