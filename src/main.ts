@@ -2,7 +2,7 @@ import type { App, Editor } from 'obsidian'
 import type { GinkoBlocksSettings } from './settings/settings'
 import { MarkdownView, Modal, Notice, Plugin, Setting } from 'obsidian'
 import { DEFAULT_SETTINGS, GinkoBlocksSettingTab } from './settings/settings'
-import { WelcomeModal } from './welcome/welcome'
+import { WELCOME_VIEW_TYPE, WelcomeView } from './welcome/welcomeView'
 
 // Remember to rename these classes and interfaces!
 
@@ -12,16 +12,29 @@ export default class GinkoBlocksPlugin extends Plugin {
   async onload() {
     await this.loadSettings()
 
-    // Show welcome modal on first load
+    // Register the welcome view type
+    this.registerView(
+      WELCOME_VIEW_TYPE,
+      leaf => new WelcomeView(leaf),
+    )
+
+    // Show welcome view on first load
     if (!localStorage.getItem('ginko-blocks-welcome-shown')) {
-      new WelcomeModal(this.app).open()
+      await this.activateWelcomeView()
     }
 
+    // Add command to show welcome view
+    this.addCommand({
+      id: 'show-welcome-view',
+      name: 'Show Welcome View',
+      callback: () => {
+        this.activateWelcomeView()
+      },
+    })
+
     // This creates an icon in the left ribbon.
-    const ribbonIconEl = this.addRibbonIcon('dice', 'Ginko Blocks', (_: MouseEvent) => {
-      // Called when the user clicks the icon.
-      const notice = new Notice('This is a notice!')
-      return notice
+    const ribbonIconEl = this.addRibbonIcon('sparkle', 'Ginko Blocks', async () => {
+      await this.activateWelcomeView()
     })
     // Perform additional things with the ribbon
     ribbonIconEl.addClass('ginko-blocks-ribbon-class')
@@ -82,7 +95,8 @@ export default class GinkoBlocksPlugin extends Plugin {
   }
 
   onunload() {
-
+    // Unregister the welcome view type
+    this.app.workspace.detachLeavesOfType(WELCOME_VIEW_TYPE)
   }
 
   async loadSettings() {
@@ -91,6 +105,29 @@ export default class GinkoBlocksPlugin extends Plugin {
 
   async saveSettings() {
     await this.saveData(this.settings)
+  }
+
+  async activateWelcomeView() {
+    const { workspace } = this.app
+
+    // First check if view is already open
+    const existingLeaves = workspace.getLeavesOfType(WELCOME_VIEW_TYPE)
+    if (existingLeaves.length > 0) {
+      // A leaf with our view already exists, use that
+      workspace.revealLeaf(existingLeaves[0])
+      return
+    }
+
+    // Create a new leaf in the root split (main content area)
+    // Use 'split' parameter to ensure we create in the root split
+    const leaf = workspace.getLeaf(true)
+    if (leaf) {
+      await leaf.setViewState({
+        type: WELCOME_VIEW_TYPE,
+        active: true,
+      })
+      workspace.revealLeaf(leaf)
+    }
   }
 }
 

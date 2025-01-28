@@ -95,3 +95,38 @@
   padding: 1rem 2rem;
 }
 
+.ginko-blocks-welcome-view {
+  padding: 2em;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.ginko-blocks-welcome-view h1 {
+  margin-bottom: 1.5em;
+}
+
+.ginko-blocks-welcome-view h2 {
+  margin-top: 2em;
+}
+
+.ginko-blocks-welcome-view a {
+  text-decoration: none;
+}
+
+.ginko-blocks-welcome-view a:hover {
+  text-decoration: underline;
+}
+
+.ginko-blocks-welcome-footer {
+  margin-top: 3em;
+  text-align: center;
+}
+
+.ginko-blocks-welcome-footer button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
