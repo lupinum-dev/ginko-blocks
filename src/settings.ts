@@ -23,6 +23,15 @@ export class GinkoBlocksSettingTab extends PluginSettingTab {
 
     containerEl.empty()
 
+    // Banner
+    const bannerDiv = containerEl.createDiv('ginko-blocks-banner')
+    const logoDiv = bannerDiv.createDiv('ginko-blocks-logo')
+    const titleDiv = bannerDiv.createDiv('ginko-blocks-title')
+    titleDiv.setText('Title')
+    const descDiv = bannerDiv.createDiv('ginko-blocks-description')
+    descDiv.setText('Description')
+
+    // Settings below banner
     new Setting(containerEl)
       .setName('Setting #1')
       .setDesc('It\'s a secret')
