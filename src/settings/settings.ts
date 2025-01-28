@@ -1,5 +1,6 @@
 import type { App } from 'obsidian'
 import type GinkoBlocksPlugin from '../main'
+import type { GinkoScope } from './resetModal'
 import { PluginSettingTab, Setting } from 'obsidian'
 import { ResetModal } from './resetModal'
 import { ResetStorageModal } from './resetStorage'
@@ -310,11 +311,11 @@ export class GinkoBlocksSettingTab extends PluginSettingTab {
         .setName(`Reset ${component.name}`)
         .addButton(button => button
           .setButtonText('Current File')
-          .onClick(() => this.showResetConfirmation(component.name, 'current file')),
+          .onClick(() => this.showResetConfirmation(component.name, 'file')),
         )
         .addButton(button => button
           .setButtonText('Whole Vault')
-          .onClick(() => this.showResetConfirmation(component.name, 'whole vault')),
+          .onClick(() => this.showResetConfirmation(component.name, 'vault')),
         )
     })
 
@@ -324,11 +325,11 @@ export class GinkoBlocksSettingTab extends PluginSettingTab {
       .setDesc('Reset all components at once')
       .addButton(button => button
         .setButtonText('Reset Current File')
-        .onClick(() => this.showResetConfirmation('all components', 'current file')),
+        .onClick(() => this.showResetConfirmation('all components', 'file')),
       )
       .addButton(button => button
         .setButtonText('Reset Whole Vault')
-        .onClick(() => this.showResetConfirmation('all components', 'whole vault')),
+        .onClick(() => this.showResetConfirmation('all components', 'vault')),
       )
 
     // Add Local Storage Reset Section
@@ -343,7 +344,7 @@ export class GinkoBlocksSettingTab extends PluginSettingTab {
         }))
   }
 
-  private showResetConfirmation(component: string, scope: string): void {
+  private showResetConfirmation(component: string, scope: GinkoScope): void {
     new ResetModal(
       this.app,
       component,

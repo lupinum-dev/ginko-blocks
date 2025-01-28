@@ -1,11 +1,13 @@
 import type { App } from 'obsidian'
 import { Modal, Setting } from 'obsidian'
 
+export type GinkoScope = 'file' | 'vault'
+
 export class ResetModal extends Modal {
   constructor(
     app: App,
     public component: string,
-    public scope: string,
+    public resetScope: GinkoScope,
     public onReset: () => void,
   ) {
     super(app)
@@ -28,7 +30,7 @@ export class ResetModal extends Modal {
     actionDetails.createEl('br')
     actionDetails.createEl('strong', { text: 'WHERE: ' })
     actionDetails.createSpan({
-      text: this.scope === 'current file'
+      text: this.resetScope === 'file'
         ? 'Only in the currently active note'
         : 'Across your entire vault',
     })
@@ -44,7 +46,7 @@ export class ResetModal extends Modal {
     consequencesDiv.createEl('p', { text: 'This will:' })
     const consequencesList = consequencesDiv.createEl('ul')
     consequencesList.createEl('li', {
-      text: `Remove all ${this.component} configurations${this.scope === 'current file' ? ' in this note' : ' across your vault'}`,
+      text: `Remove all ${this.component} configurations${this.resetScope === 'file' ? ' in this note' : ' across your vault'}`,
     })
     consequencesList.createEl('li', {
       text: 'Restore default settings for the affected components',
