@@ -1,4 +1,4 @@
-import type { MarkdownPostProcessor, MarkdownPostProcessorContext, MarkdownRenderChild, MarkdownRenderer } from 'obsidian'
+import type { MarkdownPostProcessor, MarkdownPostProcessorContext } from 'obsidian'
 
 export const LAYOUT_REGEX = /\+\+layout(?:\(.*?\))?\n([\s\S]*?)\+\+/g
 export const COL_REGEX = /--col\n([\s\S]*?)(?=--col|\+\+)/g

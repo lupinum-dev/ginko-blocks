@@ -1,6 +1,5 @@
-import type { App, Editor } from 'obsidian'
 import type { GinkoBlocksSettings } from './settings/settings'
-import { MarkdownView, Modal, Notice, Plugin, Setting } from 'obsidian'
+import { Plugin } from 'obsidian'
 import { syntaxHighlightField } from './editor/_syntax/syntaxHighlightExtension'
 import { createAspectPreviewExtension } from './editor/aspect/aspectPreviewExtension'
 import { createLayoutPreviewExtension } from './editor/layout/layoutPreviewExtension'

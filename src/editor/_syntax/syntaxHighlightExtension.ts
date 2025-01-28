@@ -1,7 +1,7 @@
 import type { Transaction } from '@codemirror/state'
 import type { DecorationSet } from '@codemirror/view'
 import { syntaxTree } from '@codemirror/language'
-import { Extension, RangeSetBuilder, StateField } from '@codemirror/state'
+import { RangeSetBuilder, StateField } from '@codemirror/state'
 import { Decoration, EditorView } from '@codemirror/view'
 
 // Create decorations with specific classes

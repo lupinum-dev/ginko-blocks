@@ -1,6 +1,6 @@
 import type { MarkdownPostProcessor, MarkdownPostProcessorContext } from 'obsidian'
 import { MarkdownRenderChild, MarkdownRenderer } from 'obsidian'
-import { createIconElement, parseBlockProperties, parseTabProperties } from '../utils'
+import { createIconElement, parseTabProperties } from '../utils'
 
 export const TABS_REGEX = /::tabs(?:\(.*?\))?\n([\s\S]*?)::$/gm
 export const TAB_REGEX = /--tab(?:\(.*?\))?(.*?)(?=\n--tab|\n?::|\n?$)/gm

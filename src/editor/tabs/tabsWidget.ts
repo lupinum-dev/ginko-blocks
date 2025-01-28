@@ -6,7 +6,7 @@ import type {
 } from '../utils'
 import { StateEffect } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
-import { addIcon, getIcon, MarkdownRenderChild, MarkdownRenderer } from 'obsidian'
+import { MarkdownRenderChild, MarkdownRenderer } from 'obsidian'
 import { BaseWidget } from '../_base/baseWidget'
 import {
   cleanMarkdownString,
@@ -14,7 +14,6 @@ import {
   parseBlockProperties,
   parseTabProperties,
 } from '../utils'
-import { toggleTabEdit } from './tabsPreviewExtension'
 
 /**
  * Represents a single tab's data structure
