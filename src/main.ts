@@ -1,7 +1,8 @@
 import type { App, Editor } from 'obsidian'
-import type { GinkoBlocksSettings } from './settings'
-import { MarkdownView, Modal, Notice, Plugin } from 'obsidian'
-import { DEFAULT_SETTINGS, GinkoBlocksSettingTab } from './settings'
+import type { GinkoBlocksSettings } from './settings/settings'
+import { MarkdownView, Modal, Notice, Plugin, Setting } from 'obsidian'
+import { DEFAULT_SETTINGS, GinkoBlocksSettingTab } from './settings/settings'
+import { WelcomeModal } from './welcome/welcome'
 
 // Remember to rename these classes and interfaces!
 
@@ -11,10 +12,16 @@ export default class GinkoBlocksPlugin extends Plugin {
   async onload() {
     await this.loadSettings()
 
+    // Show welcome modal on first load
+    if (!localStorage.getItem('ginko-blocks-welcome-shown')) {
+      new WelcomeModal(this.app).open()
+    }
+
     // This creates an icon in the left ribbon.
-    const ribbonIconEl = this.addRibbonIcon('dice', 'Ginko Blocks', (evt: MouseEvent) => {
+    const ribbonIconEl = this.addRibbonIcon('dice', 'Ginko Blocks', (_: MouseEvent) => {
       // Called when the user clicks the icon.
-      new Notice('This is a notice!')
+      const notice = new Notice('This is a notice!')
+      return notice
     })
     // Perform additional things with the ribbon
     ribbonIconEl.addClass('ginko-blocks-ribbon-class')
@@ -35,8 +42,7 @@ export default class GinkoBlocksPlugin extends Plugin {
     this.addCommand({
       id: 'ginko-blocks-editor-command',
       name: 'Ginko Blocks editor command',
-      editorCallback: (editor: Editor, view: MarkdownView) => {
-        console.log(editor.getSelection())
+      editorCallback: (editor: Editor, _: MarkdownView) => {
         editor.replaceSelection('Sample Editor Command')
       },
     })
@@ -65,12 +71,14 @@ export default class GinkoBlocksPlugin extends Plugin {
 
     // If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
     // Using this function will automatically remove the event listener when this plugin is disabled.
-    this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-      console.log('click', evt)
+    this.registerDomEvent(document, 'click', (_: MouseEvent) => {
+      // Click event handling if needed
     })
 
     // When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-    this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000))
+    this.registerInterval(window.setInterval(() => {
+      // Interval handling if needed
+    }, 5 * 60 * 1000))
   }
 
   onunload() {

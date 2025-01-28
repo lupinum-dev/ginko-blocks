@@ -1,6 +1,8 @@
 import type { App } from 'obsidian'
-import type GinkoBlocksPlugin from './main'
-import { Modal, PluginSettingTab, Setting } from 'obsidian'
+import type GinkoBlocksPlugin from '../main'
+import { PluginSettingTab, Setting } from 'obsidian'
+import { ResetModal } from './resetModal'
+import { ResetStorageModal } from './resetStorage'
 
 export interface GinkoBlocksSettings {
   components: {
@@ -13,6 +15,8 @@ export interface GinkoBlocksSettings {
     layout: boolean
     steps: boolean
     tabs: boolean
+    iconify: boolean
+    [key: string]: boolean
   }
   mySetting: string
 }
@@ -28,6 +32,7 @@ export const DEFAULT_SETTINGS: GinkoBlocksSettings = {
     layout: false,
     steps: false,
     tabs: false,
+    iconify: false,
   },
   mySetting: 'default',
 }
@@ -46,16 +51,16 @@ export class GinkoBlocksSettingTab extends PluginSettingTab {
     containerEl.empty()
 
     // Banner
-    const bannerDiv = containerEl.createDiv('ginko-blocks-banner')
-    bannerDiv.createDiv('ginko-blocks-logo')
-    const titleDiv = bannerDiv.createDiv('ginko-blocks-title')
+    const bannerDiv = containerEl.createDiv('ginko-blocks-settings-banner')
+    bannerDiv.createDiv('ginko-blocks-settings-logo')
+    const titleDiv = bannerDiv.createDiv('ginko-blocks-settings-title')
     titleDiv.setText('Ginko Blocks')
-    const descDiv = bannerDiv.createDiv('ginko-blocks-description')
+    const descDiv = bannerDiv.createDiv('ginko-blocks-settings-description')
     descDiv.setText('Enhance your notes with powerful block components')
 
     // Documentation Area
     containerEl.createEl('h2', { text: 'Documentation' })
-    const docDiv = containerEl.createDiv('ginko-blocks-documentation')
+    const docDiv = containerEl.createDiv('ginko-blocks-settings-documentation')
     docDiv.createEl('p', {
       text: 'Please refer to our comprehensive documentation to get the most out of Ginko Blocks. We have detailed guides on component usage, examples, and best practices.',
     })
@@ -69,7 +74,7 @@ export class GinkoBlocksSettingTab extends PluginSettingTab {
 
     // Discord Community
     containerEl.createEl('h2', { text: 'Join Our Community' })
-    const discordDiv = containerEl.createDiv('ginko-blocks-discord')
+    const discordDiv = containerEl.createDiv('ginko-blocks-settings-discord')
     const discordList = discordDiv.createEl('ul')
     const discordItems = [
       'Get help and support',
@@ -155,7 +160,7 @@ export class GinkoBlocksSettingTab extends PluginSettingTab {
         el.createSpan({ text: component.description })
         el.createEl('a', {
           text: 'Read documentation',
-          cls: 'ginko-blocks-doc-link',
+          cls: 'ginko-blocks-settings-doc-link',
           href: `https://ginko.build/docs/components/${component.docLink}`,
         })
       }))
@@ -167,11 +172,44 @@ export class GinkoBlocksSettingTab extends PluginSettingTab {
         }))
     })
 
+    // Add Utilities Section
+    containerEl.createEl('h2', { text: 'Utilities' })
+
+    const utilities = [
+      {
+        id: 'iconify',
+        name: 'Iconify Icons',
+        description: 'Extend the standard Lucide icons with 200,000+ ready-to-use icons from Iconify. Browse available icons at icones.js.org',
+        docLink: '/iconify',
+      },
+    ]
+
+    utilities.forEach((utility) => {
+      const setting = new Setting(containerEl)
+      setting.setName(utility.name)
+      setting.setDesc(createFragment((el) => {
+        el.createSpan({ text: utility.description })
+        el.createEl('a', {
+          text: 'Read documentation',
+          cls: 'ginko-blocks-settings-doc-link',
+          href: `https://ginko.build/docs/utilities/${utility.docLink}`,
+        })
+      }))
+      setting.addToggle(toggle => toggle
+        .setValue(this.plugin.settings.components[utility.id])
+        .onChange(async (value) => {
+          this.plugin.settings.components[utility.id] = value
+          await this.plugin.saveSettings()
+        }))
+    })
+
     // Reset Section - Danger Zone
     containerEl.createEl('h2', { text: 'Danger Zone' })
 
-    const dangerZone = containerEl.createDiv('ginko-blocks-danger-zone')
-    const dangerHeader = dangerZone.createDiv('ginko-blocks-danger-header')
+    const dangerZone = containerEl.createDiv('ginko-blocks-settings-danger-zone')
+    const dangerHeader = dangerZone.createDiv('ginko-blocks-settings-danger-header')
+    const dangerContent = dangerZone.createDiv('ginko-blocks-settings-danger-content')
+    dangerContent.style.display = 'none'
 
     new Setting(dangerHeader)
       .setName('Show Reset Options')
@@ -181,9 +219,6 @@ export class GinkoBlocksSettingTab extends PluginSettingTab {
         .onChange((value) => {
           dangerContent.style.display = value ? 'block' : 'none'
         }))
-
-    const dangerContent = dangerZone.createDiv('ginko-blocks-danger-content')
-    dangerContent.style.display = 'none'
 
     // Move reset options inside dangerContent
     components.forEach((component) => {
@@ -211,64 +246,27 @@ export class GinkoBlocksSettingTab extends PluginSettingTab {
         .setButtonText('Reset Whole Vault')
         .onClick(() => this.showResetConfirmation('all components', 'whole vault')),
       )
+
+    // Add Local Storage Reset Section
+    dangerContent.createEl('h3', { text: 'Reset Local Storage' })
+    new Setting(dangerContent)
+      .setDesc('View and delete Ginko Blocks local storage data')
+      .addButton(button => button
+        .setButtonText('Manage Local Storage')
+        .setWarning()
+        .onClick(() => {
+          new ResetStorageModal(this.app).open()
+        }))
   }
 
   private showResetConfirmation(component: string, scope: string): void {
-    const modal = new Modal(this.app)
-    modal.titleEl.setText(`Reset ${component}`)
-
-    const content = modal.contentEl
-    content.empty()
-
-    // Action Summary
-    const actionDiv = content.createDiv('ginko-blocks-modal-action')
-    actionDiv.createEl('h3', {
-      text: 'Proposed Action:',
-      cls: 'ginko-blocks-modal-heading',
-    })
-
-    const actionDetails = actionDiv.createDiv('ginko-blocks-modal-details')
-    actionDetails.createEl('strong', { text: 'WHAT: ' })
-    actionDetails.createSpan({ text: `Reset ${component}` })
-    actionDetails.createEl('br')
-    actionDetails.createEl('strong', { text: 'WHERE: ' })
-    actionDetails.createSpan({
-      text: scope === 'current file'
-        ? 'Only in the currently active note'
-        : 'Across your entire vault',
-    })
-
-    // Warning
-    content.createEl('p', {
-      text: '⚠️ Warning: This action cannot be undone. Please make sure you have a backup of your data before proceeding.',
-      cls: 'ginko-blocks-modal-warning',
-    })
-
-    // Consequences
-    const consequencesDiv = content.createDiv('ginko-blocks-modal-consequences')
-    consequencesDiv.createEl('p', { text: 'This will:' })
-    const consequencesList = consequencesDiv.createEl('ul')
-    consequencesList.createEl('li', {
-      text: `Remove all ${component} configurations${scope === 'current file' ? ' in this note' : ' across your vault'}`,
-    })
-    consequencesList.createEl('li', {
-      text: 'Restore default settings for the affected components',
-    })
-
-    new Setting(content)
-      .addButton(button => button
-        .setButtonText('Cancel')
-        .onClick(() => modal.close()),
-      )
-      .addButton(button => button
-        .setButtonText('Reset')
-        .setCta()
-        .onClick(() => {
-          // TODO: Implement actual reset logic here
-          modal.close()
-        }),
-      )
-
-    modal.open()
+    new ResetModal(
+      this.app,
+      component,
+      scope,
+      () => {
+        // TODO: Implement actual reset logic here
+      },
+    ).open()
   }
 }

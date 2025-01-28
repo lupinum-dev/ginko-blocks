@@ -1,0 +1,96 @@
+/* Reset Modal Action */
+.ginko-blocks-reset-modal-action {
+  background: var(--background-secondary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.ginko-blocks-reset-modal-heading {
+  color: var(--text-normal);
+  font-size: 1.3em;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+}
+
+.ginko-blocks-reset-modal-details {
+  line-height: 1.6;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.ginko-blocks-reset-modal-details strong {
+  color: var(--text-accent);
+  display: inline-block;
+  width: 4rem;
+}
+
+.ginko-blocks-reset-modal-warning {
+  background: var(--background-modifier-error);
+  color: var(--text-on-accent);
+  padding: 1.2rem;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ginko-blocks-reset-modal-consequences {
+  background: var(--background-primary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 12px;
+  padding: 1.2rem;
+  margin: 1.5rem 0;
+}
+
+.ginko-blocks-reset-modal-consequences p {
+  color: var(--text-muted);
+  font-weight: 500;
+  margin: 0 0 0.8rem 0;
+}
+
+.ginko-blocks-reset-modal-consequences ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.ginko-blocks-reset-modal-consequences li {
+  color: var(--text-normal);
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.ginko-blocks-reset-modal-consequences li:last-child {
+  margin-bottom: 0;
+}
+
+/* Reset Modal Buttons */
+.ginko-blocks-reset-modal .setting-item {
+  border: none;
+  padding: 0;
+  margin-top: 2rem;
+}
+
+.ginko-blocks-reset-modal .setting-item-control {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.ginko-blocks-reset-modal button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.ginko-blocks-reset-modal button:not(.mod-cta) {
+  background: var(--background-modifier-border);
+  color: var(--text-normal);
+}
+
+.ginko-blocks-reset-modal button.mod-cta {
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+}

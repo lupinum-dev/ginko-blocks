@@ -1,0 +1,201 @@
+/* Settings Banner */
+.ginko-blocks-settings-banner {
+  background: var(--background-secondary);
+  padding: 2rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.ginko-blocks-settings-logo {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1rem;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2" viewBox="0 0 296 297"><path d="M-1490.89 1133.34h590.662v590.662h-590.662z" style="fill:none" transform="matrix(.50048 0 0 .50048 746.155 -566.685)"/><path d="M891.103 593.909c0 21.124-2.76 38.248-6.164 38.248H865.79c-3.414 0-6.182-17.171-6.182-38.354V415.019c0-9.948.637-19.488 1.771-26.522 1.134-7.034 2.671-10.986 4.275-10.986h19.616c3.221 0 5.833 16.205 5.833 36.194v180.204Zm-9.044-180.392h-13.377c-1.814 0-3.298 9.822-3.298 21.827v25.499c0 12.005 1.484 21.827 3.298 21.827h11.717c.583 0 1.055 2.931 1.055 6.546v7.037c0 1.338.175 2.423.391 2.423h.214c1.814 0 3.298-9.822 3.298-21.827v-41.505c0-12.005-1.484-21.827-3.298-21.827Zm-12.773 99.016c0-1.338-.175-2.422-.39-2.422h-.214c-1.814 0-3.298 9.822-3.298 21.826v42.674c0 12.005 1.484 21.827 3.298 21.827h13.377c1.814 0 3.298-9.822 3.298-21.827v-26.667c0-12.005-1.484-21.827-3.298-21.827h-11.767c-.267 0-.523-.657-.711-1.827-.189-1.17-.295-2.757-.295-4.411v-7.346Z" style="fill:#87285e;stroke:#87285e;stroke-width:.64px" transform="matrix(0 2.16913 -.3496 0 324.3 -1827.732)"/><text x="602.483" y="1092.09" style="font-family:&quot;Charter-Bold&quot;,&quot;Charter&quot;,serif;font-weight:700;font-size:66.667px;fill:#1f1f1f" transform="translate(-542.36 -903.782)">G<tspan x="647.813px 666.158px 704.49px 739.372px" y="1092.09px 1092.09px 1092.09px 1092.09px">inko</tspan></text><text x="595.654" y="1162.92" style="font-family:&quot;Charter-Bold&quot;,&quot;Charter&quot;,serif;font-weight:700;font-size:66.667px;fill:#1f1f1f" transform="translate(-542.36 -903.782)">B<tspan x="635.516px 653.796px 690.272px 720.011px 754.892px" y="1162.92px 1162.92px 1162.92px 1162.92px 1162.92px">locks</tspan></text></svg>');
+  background-size: contain;
+}
+
+.ginko-blocks-settings-title {
+  font-size: 1.8em;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: var(--text-normal);
+}
+
+.ginko-blocks-settings-description {
+  font-size: 1.1em;
+  color: var(--text-muted);
+}
+
+/* Documentation Section */
+.ginko-blocks-settings-documentation {
+  background: var(--background-primary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid var(--background-modifier-border);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.ginko-blocks-settings-documentation p {
+  font-size: 1.1em;
+  line-height: 1.6;
+  margin-bottom: 1.2rem;
+  color: var(--text-normal);
+}
+
+/* Discord Section */
+.ginko-blocks-settings-discord {
+  background: var(--background-primary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid var(--background-modifier-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.ginko-blocks-settings-discord::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #5865F2; /* Discord brand color */
+}
+
+.ginko-blocks-settings-discord ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.2rem 0;
+}
+
+.ginko-blocks-settings-discord li {
+  padding: 0.5rem 0 0.5rem 2rem;
+  position: relative;
+  color: var(--text-normal);
+}
+
+.ginko-blocks-settings-discord li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--text-accent);
+}
+
+/* Component Documentation Links */
+.ginko-blocks-settings-doc-link {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.85em;
+  color: var(--text-accent);
+  background: var(--background-modifier-border);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  width: fit-content;
+}
+
+.ginko-blocks-settings-doc-link:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-accent-hover);
+  transform: translateY(-1px);
+}
+
+/* Settings Buttons */
+.ginko-blocks-settings-documentation .setting-item,
+.ginko-blocks-settings-discord .setting-item {
+  display: flex;
+  justify-content: center;
+  border: none;
+  padding: 0;
+}
+
+.ginko-blocks-settings-documentation .setting-item-info,
+.ginko-blocks-settings-discord .setting-item-info {
+  display: none;
+}
+
+.ginko-blocks-settings-documentation .setting-item-control,
+.ginko-blocks-settings-discord .setting-item-control {
+  position: static;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 0;
+}
+
+.ginko-blocks-settings-documentation .setting-item-control button,
+.ginko-blocks-settings-discord .setting-item-control button {
+  min-width: 200px;
+  text-align: center;
+}
+
+/* Component Settings */
+.setting-item.mod-toggle .setting-item-info {
+  padding-right: 2rem;
+}
+
+.setting-item-description {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+/* Improve toggle spacing */
+.setting-item.mod-toggle {
+  border-top: 1px solid var(--background-modifier-border);
+  padding: 1rem 0;
+}
+
+.setting-item.mod-toggle:first-child {
+  border-top: none;
+}
+
+.setting-item-name {
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+/* Danger Zone */
+.ginko-blocks-settings-danger-zone {
+  background: var(--background-primary);
+  border: 1px solid var(--background-modifier-error);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.ginko-blocks-settings-danger-header {
+  border-bottom: 1px solid var(--background-modifier-border);
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ginko-blocks-settings-danger-header .setting-item {
+  padding: 0;
+  border: none;
+}
+
+.ginko-blocks-settings-danger-content {
+  margin-top: 1rem;
+}
+
+.ginko-blocks-settings-danger-content h3 {
+  color: var(--text-error);
+  font-size: 1.1em;
+  margin: 1.5rem 0 1rem;
+}
+
+.ginko-blocks-settings-danger-zone .setting-item-name {
+  color: var(--text-error);
+}
+
+.ginko-blocks-settings-danger-header .setting-item-description {
+  color: var(--text-muted);
+}

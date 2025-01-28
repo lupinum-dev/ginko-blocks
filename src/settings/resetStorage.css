@@ -1,0 +1,31 @@
+.ginko-blocks-reset-storage-modal {
+    padding: 1rem;
+}
+
+.ginko-blocks-reset-storage-modal h2 {
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.ginko-blocks-reset-storage-modal .storage-list {
+    margin-bottom: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.ginko-blocks-reset-storage-modal .setting-item {
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+}
+
+.ginko-blocks-reset-storage-modal .setting-item:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+.ginko-blocks-reset-storage-modal .setting-item-description {
+    font-family: var(--font-monospace);
+    font-size: 0.8em;
+    word-break: break-all;
+}
