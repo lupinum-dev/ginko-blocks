@@ -9,8 +9,8 @@ export const toggleGalleryEditEffect = StateEffect.define<{ id: string, value: b
 export class GalleryPreviewExtension extends BasePreviewExtension<GalleryWidget> {
   constructor(app: App) {
     super(app, {
-      startTag: '++gallery',
-      endTag: '++',
+      startTag: '::gallery',
+      endTag: '::',
       fieldName: 'galleryPreview',
     })
   }
