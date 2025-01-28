@@ -3,8 +3,7 @@
   "name": "Ginko Blocks",
   "version": "0.0.1",
   "minAppVersion": "0.15.0",
-  "description": "Native-like components that enhance your Obsidian experience: Tabs, Column Layout, Steps, Image Gallery, File Tree, ..",
-  "author": "Lupinum OG",
+  "description": "Add professional layout components to Obsidian that look and feel native. Ginko Blocks includes tabs, columns, steps, cards, layouts and file trees. Full reset capability included.",
   "authorUrl": "https://obsidian.md",
   "fundingUrl": "https://obsidian.md/pricing",
   "isDesktopOnly": false

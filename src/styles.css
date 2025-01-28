@@ -8,11 +8,10 @@ If your plugin does not need CSS, delete this file.
 */
 
 @import url("src/editor/file-tree/fileTree.css");
-@import url("/editor/file-tree/file-tree.css");
-@import url("/editor/gallery/gallery.css");
-@import url("/editor/gallery-folder/gallery-folder.css");
-@import url("/editor/layout/layout.css");
-@import url("/editor/steps/steps.css");
-@import url("/editor/tabs/tabs.css");
-/* @import url("/editor/timeline/timeline.css"); */
+@import url("src/editor/aspect/aspect.css");
+@import url("src/editor/gallery/gallery.css");
+@import url("src/editor/gallery-folder/galleryFolder.css");
+@import url("src/editor/layout/layout.css");
+@import url("src/editor/steps/steps.css");
+@import url("src/editor/tabs/tabs.css");
 

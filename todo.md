@@ -4,7 +4,7 @@
 - [ ] First task
  
 ## Planning 📋
-- [ ] Future 
+- [ ] CardGrid(Stagger Prop) https://starlight.astro.build/components/card-grids/#stagger-cards
 
 
 ## Completed ✅

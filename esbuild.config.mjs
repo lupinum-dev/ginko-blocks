@@ -1,5 +1,6 @@
 import process from 'node:process'
 import builtins from 'builtin-modules'
+import * as dotenv from 'dotenv'
 import esbuild from 'esbuild'
 
 const banner
@@ -11,6 +12,7 @@ https://github.com/lupinum-dev/ginko-blocks
 `
 
 const prod = (process.argv[2] === 'production')
+dotenv.config()
 
 const context = await esbuild.context({
   banner: {
@@ -42,7 +44,7 @@ const context = await esbuild.context({
   logLevel: 'info',
   sourcemap: prod ? false : 'inline',
   treeShaking: true,
-  outdir: './',
+  outdir: process.env.OUTPATH || './',
   outbase: 'src',
   entryNames: '[name]',
   minify: prod,

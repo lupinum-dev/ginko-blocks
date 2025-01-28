@@ -4,7 +4,19 @@
   "description": "Native-like components that enhance your Obsidian experience",
   "author": "Lupinum OG",
   "license": "Apache-2.0",
-  "keywords": ["tabs", "steps", "column", "layout", "filetree", "image gallery", "image aspect ratio", "ratio", "components", "ginko", "blocks"],
+  "keywords": [
+    "tabs",
+    "steps",
+    "column",
+    "layout",
+    "filetree",
+    "image gallery",
+    "image aspect ratio",
+    "ratio",
+    "components",
+    "ginko",
+    "blocks"
+  ],
   "main": "main.ts",
   "scripts": {
     "dev": "node esbuild.config.mjs",
@@ -17,6 +29,7 @@
     "@codemirror/language": "^6.10.8",
     "@codemirror/state": "^6.5.0",
     "@codemirror/view": "^6.36.1",
+    "dotenv": "^16.4.7",
     "nanoid": "^5.0.9",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
