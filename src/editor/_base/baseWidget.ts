@@ -1,6 +1,6 @@
 import type { EditorView } from '@codemirror/view'
 import type { App } from 'obsidian'
-import crypto from 'node:crypto'
+import { randomUUID } from 'node:crypto'
 import { WidgetType } from '@codemirror/view'
 import { hashContent, logDebug } from '../utils'
 
@@ -22,7 +22,7 @@ export abstract class BaseWidget extends WidgetType {
 
   constructor({ content, id, app }: BaseWidgetConfig) {
     super()
-    this.instanceId = crypto.randomUUID()
+    this.instanceId = randomUUID()
     this.content = content
     this.id = id
     this.app = app

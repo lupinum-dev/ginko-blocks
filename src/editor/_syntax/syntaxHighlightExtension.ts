@@ -141,7 +141,7 @@ function isInCodeBlock(transaction: Transaction, pos: number): boolean {
   let currentNode = tree.resolveInner(pos, 1)
 
   // Check if we're inside a code block
-  while (currentNode) {
+  while (currentNode && currentNode.parent) { // Add null check for parent
     if (currentNode.type.name.includes('codeblock')
       || currentNode.type.name.includes('code_block')
       || currentNode.type.name.includes('HyperMD-codeblock')) {
