@@ -117,3 +117,33 @@
 .ginko-tab-editor:focus {
   border-color: #0366d6;
 }
+
+/* Edit Button Styles */
+.ginko-tabs-container .edit-block-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 4px;
+  color: var(--text-muted);
+  background: var(--background-secondary);
+}
+
+.ginko-tabs-container:hover .edit-block-button {
+  opacity: 1;
+}
+
+.ginko-tabs-container .edit-block-button:hover {
+  color: var(--text-normal);
+  background: var(--background-modifier-hover);
+}
+
+.ginko-tabs-container .edit-block-button svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
