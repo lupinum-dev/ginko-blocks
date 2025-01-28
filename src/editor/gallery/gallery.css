@@ -1,0 +1,221 @@
+/* Gallery Widget Styles */
+.ginko-gallery-container {
+  position: relative;
+  margin: 1em 0;
+  padding: 1em;
+  background: var(--background-primary);
+  border-radius: 8px;
+  border: 1px solid var(--background-modifier-border);
+  transition: background-color 150ms ease-in-out;
+}
+
+.ginko-gallery-container:hover {
+  background-color: var(--background-secondary);
+}
+
+.ginko-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.ginko-gallery-item {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.ginko-gallery-item:hover {
+  transform: scale(1.02);
+}
+
+.ginko-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+/* Edit Button for Gallery */
+.ginko-gallery-container .edit-block-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  opacity: 0;
+  visibility: hidden;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-s);
+  z-index: 10;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  background-color: var(--background-primary);
+}
+
+.ginko-gallery-container:hover .edit-block-button {
+  opacity: 0.8;
+  visibility: visible;
+}
+
+.ginko-gallery-container .edit-block-button:hover {
+  opacity: 1;
+  background-color: var(--background-modifier-hover);
+}
+
+/* Gallery Grid Responsive Design */
+@media screen and (max-width: 768px) {
+  .ginko-gallery-grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 0.5rem;
+      padding: 0.5rem;
+  }
+}
+
+/* Lightbox Styles */
+.ginko-gallery-lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.ginko-lightbox-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 2rem;
+}
+
+.ginko-lightbox-image-container {
+  position: relative;
+  max-width: 90%;
+  max-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ginko-lightbox-image-container img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.ginko-lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+}
+
+.ginko-lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.ginko-lightbox-nav.prev {
+  left: 20px;
+}
+
+.ginko-lightbox-nav.next {
+  right: 20px;
+}
+
+.ginko-lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+  z-index: 1001;
+}
+
+.ginko-lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.ginko-lightbox-caption {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: white;
+  padding: 1rem;
+  font-size: 1rem;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.ginko-lightbox-counter {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  color: white;
+  font-size: 0.9rem;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+
+/* Hide navigation buttons when not needed */
+.ginko-lightbox-nav[style*="hidden"] {
+  display: none;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .ginko-lightbox-nav {
+      width: 32px;
+      height: 32px;
+  }
+
+  .ginko-lightbox-close {
+      width: 32px;
+      height: 32px;
+  }
+
+  .ginko-lightbox-caption {
+      font-size: 0.9rem;
+      padding: 0.75rem;
+  }
+
+  .ginko-lightbox-counter {
+      font-size: 0.8rem;
+      padding: 0.4rem 0.8rem;
+  }
+}
