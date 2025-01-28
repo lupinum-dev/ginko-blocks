@@ -1,6 +1,7 @@
-import type { MarkdownPostProcessor, MarkdownPostProcessorContext, MarkdownRenderChild, MarkdownRenderer } from 'obsidian'
-import type { BlockProperties } from './utils'
-import { createIconElement, parseBlockProperties } from './utils'
+import type { MarkdownPostProcessor, MarkdownPostProcessorContext } from 'obsidian'
+import type { BlockProperties } from '../utils'
+import { MarkdownRenderChild, MarkdownRenderer } from 'obsidian'
+import { createIconElement, parseBlockProperties } from '../utils'
 
 export const STEPS_REGEX = /\+\+steps(?:\(.*?\))?\n([\s\S]*?)\+\+/g
 export const STEP_REGEX = /--step(?:\((.*?)\))?\s*(.*)/
@@ -15,7 +16,6 @@ export const stepsProcessor: MarkdownPostProcessor = (element: HTMLElement, cont
   const elements = Array.from(element.querySelectorAll('p, .ginko-steps-container'))
 
   let currentSteps: HTMLElement | null = null
-  let isProcessingSteps = false
   let i = 0
 
   while (i < elements.length) {
@@ -23,7 +23,7 @@ export const stepsProcessor: MarkdownPostProcessor = (element: HTMLElement, cont
     const text = el.textContent?.trim() || ''
 
     if (text.startsWith('++steps')) {
-      isProcessingSteps = true
+      let foundEnd = false
       currentSteps = createStepsContainer()
 
       // Handle single-line case
@@ -31,7 +31,6 @@ export const stepsProcessor: MarkdownPostProcessor = (element: HTMLElement, cont
         const content = text.split('\n')
         processStepsContent(content, currentSteps, context)
         el.replaceWith(currentSteps)
-        isProcessingSteps = false
         currentSteps = null
         i++
         continue
@@ -44,7 +43,6 @@ export const stepsProcessor: MarkdownPostProcessor = (element: HTMLElement, cont
       }
 
       const stepsContent: string[] = []
-      let foundEnd = false
 
       while (nextElement) {
         const siblingText = nextElement.textContent?.trim() || ''
@@ -67,7 +65,6 @@ export const stepsProcessor: MarkdownPostProcessor = (element: HTMLElement, cont
       el.replaceWith(currentSteps)
 
       if (foundEnd) {
-        isProcessingSteps = false
         currentSteps = null
       }
 
@@ -203,7 +200,7 @@ async function processStepsContent(content: string[], container: HTMLElement, co
     contentToRender += step.content
 
     await MarkdownRenderer.render(
-      app,
+      this.app,
       contentToRender.trim(),
       stepContent,
       '',

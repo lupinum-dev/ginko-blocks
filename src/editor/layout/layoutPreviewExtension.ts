@@ -23,6 +23,13 @@ class LayoutPreviewExtension extends BasePreviewExtension<LayoutWidget> {
     super(app, config)
   }
 
+  protected processContentBlock(content: string): string {
+    // Remove the layout tags and return the inner content
+    return content
+      .replace(/^::layout(?:\((.*?)\))?\n?/, '')
+      .replace(/\n?::$/, '')
+  }
+
   protected createWidget(content: string, id: string, isEditing: boolean, app: App): LayoutWidget {
     return new LayoutWidget(content, id, isEditing, app)
   }

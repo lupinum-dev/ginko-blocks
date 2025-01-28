@@ -94,7 +94,7 @@ export class TabWidget extends BaseWidget {
   /**
    * Parses the raw content string into structured tab data
    */
-  private parseTabs(content: string): TabData[] {
+  private parseTabs(content: string): readonly TabData[] {
     const cleanContent = content
       .replace(/^::tabs(?:\((.*?)\))?\n?/, '')
       .replace(/\n?::$/, '')
