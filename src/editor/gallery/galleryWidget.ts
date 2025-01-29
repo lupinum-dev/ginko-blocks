@@ -5,6 +5,8 @@ import { App, MarkdownRenderChild, MarkdownRenderer } from 'obsidian'
 import { BaseWidget } from '../_base/baseWidget'
 import { toggleGalleryEditEffect } from './galleryPreviewExtension'
 
+type GalleryMode = 'rows' | 'columns'
+
 interface GalleryImage {
   src: string
   alt: string
@@ -28,6 +30,8 @@ export class GalleryWidget extends BaseWidget {
   private galleryImages: GalleryImage[] = []
   private readonly CACHE_KEY = 'ginko-blocks-image-gallery-meta'
   private readonly CACHE_DURATION = 7 * 24 * 60 * 60 * 1000 // 7 days
+  private readonly GAP = 8
+  private readonly TARGET_HEIGHT = 250
 
   constructor({ content, id, app }: BaseWidgetConfig) {
     super({ content, id, app })
@@ -103,10 +107,13 @@ export class GalleryWidget extends BaseWidget {
   protected createPreviewView(view: EditorView): HTMLElement {
     const container = this.createContainer('ginko-gallery-container')
     const galleryGrid = document.createElement('div')
-    galleryGrid.className = 'ginko-gallery-grid'
+
+    // Parse mode from content
+    const mode = this.parseMode()
+    galleryGrid.className = `ginko-gallery-grid ginko-gallery-${mode}`
 
     // Start loading images
-    this.loadGalleryImages(galleryGrid, this.parseImages(this.content))
+    this.loadGalleryImages(galleryGrid, this.parseImages(this.content), mode)
 
     container.appendChild(galleryGrid)
     container.appendChild(this.createEditButton((e) => {
@@ -119,8 +126,18 @@ export class GalleryWidget extends BaseWidget {
     return container
   }
 
-  private async loadGalleryImages(container: HTMLElement, images: string[]): Promise<void> {
-    // Process all images and get their metadata
+  private parseMode(): GalleryMode {
+    const modeMatch = this.content.match(/^::gallery\((.*?)\)/)
+    if (modeMatch) {
+      const mode = modeMatch[1] as GalleryMode
+      if (['rows', 'columns'].includes(mode)) {
+        return mode
+      }
+    }
+    return 'rows' // default mode
+  }
+
+  private async loadGalleryImages(container: HTMLElement, images: string[], mode: GalleryMode): Promise<void> {
     const processedImages = await Promise.all(
       images.map(async (imgMarkdown, index) => {
         const imgContainer = document.createElement('div')
@@ -163,64 +180,93 @@ export class GalleryWidget extends BaseWidget {
       }),
     )
 
-    // Filter out null values and organize images into rows
     const validImages = processedImages.filter((img): img is NonNullable<typeof img> => img !== null)
-    this.organizeIntoRows(container, validImages)
+
+    switch (mode) {
+      case 'rows':
+        this.organizeIntoRows(container, validImages)
+        break
+      case 'columns':
+        this.organizeIntoColumns(container, validImages)
+        break
+    }
+  }
+
+  private organizeIntoColumns(
+    container: HTMLElement,
+    images: Array<{ container: HTMLElement, image: GalleryImage }>,
+  ): void {
+    const columnCount = 4
+    const columns: HTMLDivElement[] = Array.from({ length: columnCount }, () => {
+      const column = document.createElement('div')
+      column.className = 'ginko-gallery-column'
+      container.appendChild(column)
+      return column
+    })
+
+    // Calculate column widths based on image ratios
+    const columnRatios = columns.map((_, i) => 0.15 + (i * 0.01)) // Progressive width increase
+    const totalRatio = columnRatios.reduce((sum, ratio) => sum + ratio, 0)
+
+    // Set column widths
+    columns.forEach((column, i) => {
+      const width = (columnRatios[i] / totalRatio) * 100
+      column.style.width = `${width}%`
+    })
+
+    // Distribute images across columns
+    images.forEach((img, index) => {
+      const column = columns[index % columnCount]
+      column.appendChild(img.container)
+    })
   }
 
   private organizeIntoRows(
     container: HTMLElement,
     images: Array<{ container: HTMLElement, image: GalleryImage }>,
   ): void {
-    const targetRowHeight = 250 // Desired row height in pixels
-    const containerWidth = container.clientWidth || 1000 // Fallback width if not available
     let currentRow: typeof images = []
-    let currentRowWidth = 0
+    let currentRowAspectRatio = 0
+    const targetAspectRatio = 3 // Desired row aspect ratio (width/height)
+    const minItems = 3 // Minimum items per row
+    const maxItems = 5 // Maximum items per row
 
-    const processRow = (row: typeof images, isLastRow: boolean) => {
+    const processRow = (row: typeof images, _isLastRow: boolean) => {
       if (row.length === 0)
         return
 
-      const rowContainer = document.createElement('div')
-      rowContainer.className = 'ginko-gallery-row'
+      const rowElement = document.createElement('div')
+      rowElement.className = 'ginko-gallery-row'
 
-      // Calculate scaling factor to fit images in the row
-      const totalAspectRatio = row.reduce((sum, img) => {
-        return sum + (img.image.aspectRatio || 1)
-      }, 0)
-
-      const scale = isLastRow ? 1 : (containerWidth - (row.length - 1) * 8) / totalAspectRatio
+      // Calculate total aspect ratio and widths
+      const totalAspectRatio = row.reduce((sum, img) => sum + (img.image.aspectRatio || 1), 0)
 
       row.forEach(({ container: imgContainer, image }) => {
-        const width = ((image.aspectRatio || 1) * scale)
-        imgContainer.style.width = `${width}px`
-        imgContainer.style.flexGrow = '0'
-        imgContainer.style.flexShrink = '0'
-        rowContainer.appendChild(imgContainer)
+        const aspectRatio = image.aspectRatio || 1
+        const relativeWidth = aspectRatio / totalAspectRatio
+        const percentWidth = relativeWidth * 100
+
+        imgContainer.style.width = `${percentWidth}%`
+        rowElement.appendChild(imgContainer)
       })
 
-      container.appendChild(rowContainer)
+      container.appendChild(rowElement)
     }
 
     images.forEach((img, index) => {
-      if (!img.image.aspectRatio) {
-        img.image.aspectRatio = 1
-      }
-
-      const scaledWidth = (img.image.aspectRatio * targetRowHeight)
-
-      if (currentRowWidth + scaledWidth > containerWidth && currentRow.length > 0) {
-        processRow(currentRow, false)
-        currentRow = []
-        currentRowWidth = 0
-      }
-
+      const aspectRatio = img.image.aspectRatio || 1
       currentRow.push(img)
-      currentRowWidth += scaledWidth
+      currentRowAspectRatio += aspectRatio
 
-      // Process last row
-      if (index === images.length - 1) {
-        processRow(currentRow, true)
+      const shouldProcessRow
+        = currentRow.length >= maxItems
+        || (currentRow.length >= minItems && currentRowAspectRatio >= targetAspectRatio)
+        || index === images.length - 1
+
+      if (shouldProcessRow) {
+        processRow(currentRow, index === images.length - 1)
+        currentRow = []
+        currentRowAspectRatio = 0
       }
     })
   }
