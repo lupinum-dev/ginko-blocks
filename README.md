@@ -18,7 +18,8 @@ We aim to match Obsidian's native feel while adding powerful features like tabs,
 
 ## 🚧 Work in Progress
 
-> [!CAUTION] This plugin is in early development!
+> [!CAUTION] 
+> This plugin is in early development!
 > - Back up your vault before installing
 > - Expect significant changes to features and settings
 > - Report issues on GitHub
