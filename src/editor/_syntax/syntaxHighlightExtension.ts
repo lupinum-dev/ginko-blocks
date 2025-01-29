@@ -25,7 +25,7 @@ const decorations = {
 
 // Syntax patterns
 const patterns = {
-  start: /^(::)(\w+)(?:\((.*)\))?$/,
+  start: /^(::)([\w-]+)(?:\((.*)\))?$/,
   middle: /^(--\w+)(?:\((.*)\))?(.*)$/,
   end: /^(::|)$/,
 }

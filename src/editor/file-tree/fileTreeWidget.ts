@@ -38,7 +38,7 @@ export class FileTreeWidget extends BaseWidget {
 
   private parseProperties(): Record<string, boolean> {
     const firstLine = this.content.split('\n')[0]
-    const props = parseBlockProperties(firstLine, /::filetree\((.*?)\)/)
+    const props = parseBlockProperties(firstLine, /::file-tree\((.*?)\)/)
     return Object.fromEntries(
       Object.entries(props)
         .filter(([_, value]) => typeof value === 'boolean'),
@@ -49,7 +49,7 @@ export class FileTreeWidget extends BaseWidget {
     const lines = this.content
       .split('\n')
       .filter(line => line.trim())
-      .filter(line => !line.startsWith('::filetree') && line !== '::')
+      .filter(line => !line.startsWith('::file-tree') && line !== '::')
 
     const tree: FileTreeNode[] = []
     const stack: { node: FileTreeNode, level: number }[] = []

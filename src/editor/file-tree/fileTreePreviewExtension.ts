@@ -13,7 +13,7 @@ export class FileTreePreviewExtension extends BasePreviewExtension<FileTreeWidge
 
   constructor(app: App) {
     super(app, {
-      startTag: '::filetree',
+      startTag: '::file-tree',
       endTag: '::',
       fieldName: 'fileTreePreview',
     })
