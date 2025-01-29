@@ -1,65 +1,56 @@
 .ginko-filetree-container {
   margin: 1rem 0;
-  padding: 1.25rem;
+  padding: 1rem;
   border: 1px solid var(--background-modifier-border);
   border-radius: 12px;
   background: var(--background-primary);
   position: relative;
   font-size: 0.9em;
-  max-width: fit-content;
-}
-
-/* Reset list styles */
-.ginko-filetree-container ul {
-  list-style: none !important;
-}
-
-.ginko-filetree-container li {
-  list-style: none !important;
-  text-align: left !important;
+  display: inline-block;
 }
 
 .ginko-filetree-list {
-  list-style: none !important;
-  padding-left: 0 !important;
-  margin: 0 !important;
-  line-height: 1.8;
+  display: block;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .ginko-filetree-list .ginko-filetree-list {
-  position: relative;
-  padding-left: 0 !important;
-  margin-left: 1.75rem !important;
-  border-left: 1px solid var(--background-modifier-border);
+  margin-left: 0.75rem;
+  padding-left: 0.75rem;
+  border-left: 1px dotted var(--background-modifier-border);
 }
 
 .ginko-filetree-item {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 0.5rem;
-  padding: 0.125rem 0;
-  padding-left: 0.75rem;
-  color: var(--text-normal);
-  font-family: var(--font-monospace);
+  display: block;
   position: relative;
-  text-indent: 0 !important;
+  padding: 0.125rem 0;
+  min-height: 24px;
 }
 
-/* Horizontal tree line */
-.ginko-filetree-list .ginko-filetree-list .ginko-filetree-item::before {
-  content: '';
+.ginko-filetree-item::before {
+  content: "";
   position: absolute;
-  left: 0;
+  left: -0.75rem;
   top: 50%;
   width: 0.75rem;
   height: 1px;
-  background-color: var(--background-modifier-border);
+  border-top: 1px dotted var(--background-modifier-border);
 }
 
-.ginko-filetree-item.highlighted {
-  color: var(--text-accent);
-  font-weight: 600;
+/* First level items don't need the horizontal line */
+.ginko-filetree-list > .ginko-filetree-item::before {
+  display: none;
+}
+
+.ginko-filetree-item-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  padding-left: 0.25rem;
 }
 
 .ginko-filetree-icon {
@@ -74,19 +65,21 @@
 }
 
 .ginko-filetree-icon svg {
-  width: 16px !important;
-  height: 16px !important;
+  width: 16px;
+  height: 16px;
 }
 
 .ginko-filetree-name {
-  flex: 1 1 auto;
-  min-width: 0;
+  color: var(--text-muted);
+  opacity: 0.8;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-indent: 0 !important;
-  color: var(--text-muted);
-  opacity: 0.8;
+}
+
+.ginko-filetree-item.highlighted .ginko-filetree-name {
+  color: var(--text-accent);
+  font-weight: 600;
 }
 
 /* Edit button styles */

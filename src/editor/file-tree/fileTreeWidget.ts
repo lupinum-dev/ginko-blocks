@@ -55,7 +55,7 @@ export class FileTreeWidget extends BaseWidget {
     const stack: { node: FileTreeNode, level: number }[] = []
 
     for (const line of lines) {
-      const level = (line.match(/^\s*/)?.[0].length || 0) / 2 // Assuming 2 spaces per level
+      const level = (line.match(/^\s*/)?.[0].length || 0) / 2
       const name = line.trim().replace(/^[-+*]\s*/, '')
       const isHighlighted = name.startsWith('^') && name.endsWith('^')
       const cleanName = isHighlighted ? name.slice(1, -1) : name
@@ -98,11 +98,14 @@ export class FileTreeWidget extends BaseWidget {
       if (node.highlighted)
         item.classList.add('highlighted')
 
-      // Create icon container if icons are enabled
+      const itemContent = document.createElement('div')
+      itemContent.className = 'ginko-filetree-item-content'
+
+      // Create icon if enabled
       if (this.showIcons) {
         const iconContainer = document.createElement('span')
         iconContainer.className = 'ginko-filetree-icon'
-        item.appendChild(iconContainer)
+        itemContent.appendChild(iconContainer)
 
         // Load icon asynchronously
         const iconName = node.type === 'folder' ? 'lucide:folder' : this.getFileIcon(node.name)
@@ -117,7 +120,9 @@ export class FileTreeWidget extends BaseWidget {
       const nameSpan = document.createElement('span')
       nameSpan.textContent = node.name
       nameSpan.className = 'ginko-filetree-name'
-      item.appendChild(nameSpan)
+      itemContent.appendChild(nameSpan)
+
+      item.appendChild(itemContent)
 
       // Add children
       if (node.children) {
