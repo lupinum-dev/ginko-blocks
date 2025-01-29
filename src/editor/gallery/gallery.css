@@ -1,8 +1,8 @@
 /* Gallery Widget Styles */
 .ginko-gallery-container {
   position: relative;
-  margin: 1em 0;
-  padding: 1em;
+  margin: -1.55em 0 -1.55em 0;
+  padding: 0.5em;
   background: var(--background-primary);
   border-radius: 8px;
   border: 1px solid var(--background-modifier-border);
@@ -14,29 +14,46 @@
 }
 
 .ginko-gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-  padding: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 0.25rem;
+  width: 100%;
+}
+
+/* Create columns that sit next to each other */
+.ginko-gallery-column {
+  flex: 30%;
+  max-width: 30%;
+  padding: 0 0.25rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .ginko-gallery-item {
   position: relative;
-  aspect-ratio: 1;
   overflow: hidden;
-  border-radius: 8px;
   cursor: pointer;
   transition: transform 0.2s ease;
+  margin-bottom: 0.5rem;
 }
 
 .ginko-gallery-item:hover {
   transform: scale(1.02);
 }
 
+/* Remove paragraph margins inside gallery items */
+.ginko-gallery-item p {
+  margin: 0;
+  padding: 0;
+}
+
+.ginko-gallery-item > div {
+  line-height: 0; /* Remove any line height spacing */
+}
+
 .ginko-gallery-item img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  display: block;
   border-radius: inherit;
 }
 
@@ -65,12 +82,19 @@
   background-color: var(--background-modifier-hover);
 }
 
-/* Gallery Grid Responsive Design */
-@media screen and (max-width: 768px) {
-  .ginko-gallery-grid {
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 0.5rem;
-      padding: 0.5rem;
+/* Responsive layout - makes a two column-layout instead of four columns */
+@media screen and (max-width: 800px) {
+  .ginko-gallery-column {
+    flex: 50%;
+    max-width: 50%;
+  }
+}
+
+/* Responsive layout - makes the columns stack on top of each other */
+@media screen and (max-width: 600px) {
+  .ginko-gallery-column {
+    flex: 100%;
+    max-width: 100%;
   }
 }
 

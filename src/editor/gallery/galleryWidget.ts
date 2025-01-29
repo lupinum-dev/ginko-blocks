@@ -24,10 +24,19 @@ export class GalleryWidget extends BaseWidget {
     const galleryGrid = document.createElement('div')
     galleryGrid.className = 'ginko-gallery-grid'
 
+    // Create four columns
+    const columns: HTMLDivElement[] = Array.from({ length: 4 }, () => {
+      const column = document.createElement('div')
+      column.className = 'ginko-gallery-column'
+      galleryGrid.appendChild(column)
+      return column
+    })
+
     // Parse content and create image elements
     const images = this.parseImages(this.content)
     this.galleryImages = [] // Reset gallery images
 
+    // Distribute images across columns
     images.forEach((imgMarkdown, index) => {
       const imgContainer = document.createElement('div')
       imgContainer.className = 'ginko-gallery-item'
@@ -61,7 +70,8 @@ export class GalleryWidget extends BaseWidget {
         imgContainer.appendChild(content)
       })
 
-      galleryGrid.appendChild(imgContainer)
+      // Add to the appropriate column (distribute evenly)
+      columns[index % 4].appendChild(imgContainer)
     })
 
     container.appendChild(galleryGrid)
@@ -112,6 +122,10 @@ export class GalleryWidget extends BaseWidget {
     const caption = document.createElement('div')
     caption.className = 'ginko-lightbox-caption'
 
+    // Create counter
+    const counter = document.createElement('div')
+    counter.className = 'ginko-lightbox-counter'
+
     // Function to update image
     const updateImage = (index: number) => {
       if (index < 0 || index >= this.galleryImages.length)
@@ -135,10 +149,6 @@ export class GalleryWidget extends BaseWidget {
       // Update counter
       counter.textContent = `${index + 1} / ${this.galleryImages.length}`
     }
-
-    // Create counter
-    const counter = document.createElement('div')
-    counter.className = 'ginko-lightbox-counter'
 
     // Add event listeners
     prevButton.addEventListener('click', () => updateImage(currentIndex - 1))
