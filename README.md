@@ -16,6 +16,13 @@
 Ginko Blocks brings high-quality interface elements to Obsidian your favorite Markdown Editor.
 We aim to match Obsidian's native feel while adding powerful features like tabs, steps, column layouts, file trees, and more.
 
+## 🚧 Work in Progress
+
+> [!CAUTION] This plugin is in early development!
+> - Back up your vault before installing
+> - Expect significant changes to features and settings
+> - Report issues on GitHub
+
 ## ✨ Key Features
 
 - Live Preview that matches Obsidian's native look
