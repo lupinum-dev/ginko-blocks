@@ -1,7 +1,7 @@
 import type { EditorView } from '@codemirror/view'
 import type { BaseWidgetConfig } from '../_base/baseWidget'
 import { imageMeta } from 'image-meta'
-import { App, MarkdownRenderChild, MarkdownRenderer } from 'obsidian'
+import { MarkdownRenderChild, MarkdownRenderer } from 'obsidian'
 import { BaseWidget } from '../_base/baseWidget'
 import { toggleGalleryEditEffect } from './galleryPreviewExtension'
 
@@ -260,8 +260,8 @@ export class GalleryWidget extends BaseWidget {
 
       const shouldProcessRow
         = currentRow.length >= maxItems
-        || (currentRow.length >= minItems && currentRowAspectRatio >= targetAspectRatio)
-        || index === images.length - 1
+          || (currentRow.length >= minItems && currentRowAspectRatio >= targetAspectRatio)
+          || index === images.length - 1
 
       if (shouldProcessRow) {
         processRow(currentRow, index === images.length - 1)

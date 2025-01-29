@@ -1,4 +1,3 @@
-import type { App } from 'obsidian'
 import { getIcon } from 'obsidian'
 
 interface SmartIconConfig {

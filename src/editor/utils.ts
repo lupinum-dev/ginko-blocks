@@ -1,4 +1,6 @@
-import type { Line, Transaction } from '@codemirror/state'
+import type { Line, SelectionRange } from '@codemirror/state'
+import type { ViewUpdate } from '@codemirror/view'
+import { Transaction } from '@codemirror/state'
 import { getIcon } from 'obsidian'
 
 /**
@@ -143,16 +145,17 @@ export function checkCursorInRegion(
 }
 
 /**
- * Gets all cursor locations from a transaction
+ * Gets all cursor locations from a transaction or view update
  */
-export function getCursorLocations(transaction: Transaction): CursorLocation[] {
+export function getCursorLocations(update: Transaction | ViewUpdate): CursorLocation[] {
   const ranges: CursorLocation[] = []
+  const state = update instanceof Transaction ? update.state : update.state
 
-  if (transaction.state.selection.ranges) {
-    transaction.state.selection.ranges
-      .filter(range => range.empty)
-      .forEach((range) => {
-        const line = transaction.state.doc.lineAt(range.head)
+  if (state.selection.ranges) {
+    state.selection.ranges
+      .filter((range: SelectionRange) => range.empty)
+      .forEach((range: SelectionRange) => {
+        const line = state.doc.lineAt(range.head)
         ranges.push({
           line,
           position: range.head,
