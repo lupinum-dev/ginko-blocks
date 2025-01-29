@@ -1,6 +1,6 @@
 /* Tab System Styles  */
 .ginko-tabs-container {
-  margin: -1.5rem 0;
+  margin: -1rem 0;
   border: 1px solid var(--background-modifier-border);
   border-radius: 8px;
   background: var(--background-primary);

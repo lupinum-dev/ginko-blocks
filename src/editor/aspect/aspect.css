@@ -3,7 +3,7 @@
   position: relative;
   padding: 1em;
   height: 100%;
-  margin: -1.75em 0;
+  margin: -1em 0;
   background: var(--background-primary);
   border-radius: 8px;
   border: 1px solid var(--background-modifier-border);
