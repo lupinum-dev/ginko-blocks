@@ -30,6 +30,7 @@
     "@codemirror/state": "^6.5.0",
     "@codemirror/view": "^6.36.1",
     "dotenv": "^16.4.7",
+    "image-meta": "^0.2.1",
     "nanoid": "^5.0.9",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -15,30 +15,29 @@
 
 .ginko-gallery-grid {
   display: flex;
-  flex-wrap: wrap;
-  padding: 0 0.25rem;
-  width: 100%;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0.5rem;
 }
 
-/* Create columns that sit next to each other */
-.ginko-gallery-column {
-  flex: 30%;
-  max-width: 30%;
-  padding: 0 0.25rem;
+.ginko-gallery-row {
   display: flex;
-  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  justify-content: flex-start;
 }
 
 .ginko-gallery-item {
   position: relative;
   overflow: hidden;
+  border-radius: 8px;
   cursor: pointer;
   transition: transform 0.2s ease;
-  margin-bottom: 0.5rem;
 }
 
 .ginko-gallery-item:hover {
   transform: scale(1.02);
+  z-index: 1;
 }
 
 /* Remove paragraph margins inside gallery items */
@@ -49,12 +48,15 @@
 
 .ginko-gallery-item > div {
   line-height: 0; /* Remove any line height spacing */
+  height: 100%;
 }
 
 .ginko-gallery-item img {
   width: 100%;
-  display: block;
+  height: 100%;
+  object-fit: cover;
   border-radius: inherit;
+  display: block;
 }
 
 /* Edit Button for Gallery */
@@ -82,19 +84,14 @@
   background-color: var(--background-modifier-hover);
 }
 
-/* Responsive layout - makes a two column-layout instead of four columns */
+/* Responsive adjustments */
 @media screen and (max-width: 800px) {
-  .ginko-gallery-column {
-    flex: 50%;
-    max-width: 50%;
+  .ginko-gallery-row {
+    flex-direction: column;
   }
-}
 
-/* Responsive layout - makes the columns stack on top of each other */
-@media screen and (max-width: 600px) {
-  .ginko-gallery-column {
-    flex: 100%;
-    max-width: 100%;
+  .ginko-gallery-item {
+    width: 100% !important;
   }
 }
 
@@ -137,8 +134,8 @@
 
 .ginko-lightbox-image-container {
   position: relative;
-  max-width: 90%;
-  max-height: 85vh;
+  max-width: min(90%, 100vh);
+  max-height: 90vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -147,12 +144,20 @@
 
 .ginko-lightbox-image-container img {
   max-width: 100%;
-  max-height: 100%;
+  max-height: 90vh;
+  width: auto;
+  height: auto;
   object-fit: contain;
   border-radius: 12px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
   opacity: 0;
   animation: imageFadeIn 0.3s ease 0.1s forwards;
+}
+
+/* Handle vertical images */
+.ginko-lightbox-image-container img[style*="aspect-ratio: 0"] {
+  max-width: min(65%, 85vh);
+  max-height: 90vh;
 }
 
 @keyframes imageFadeIn {
@@ -318,5 +323,19 @@
 
   .ginko-lightbox-nav.next {
     right: 16px;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .ginko-lightbox-content {
+    padding: 1rem;
+  }
+
+  .ginko-lightbox-image-container {
+    max-width: 95%;
+  }
+
+  .ginko-lightbox-image-container img[style*="aspect-ratio: 0"] {
+    max-width: 85%;
   }
 }
