@@ -38,7 +38,7 @@ export const tabsProcessor: MarkdownPostProcessor = async (element: HTMLElement,
 
     if (text.includes('::tabs')) {
       const container = document.createElement('div')
-      container.className = 'ginko-tabs-container ginko-embed-block markdown-rendered show-indentation-guide'
+      container.className = 'ginko-tabs-container ginko-embed-block  show-indentation-guide'
       container.setAttribute('contenteditable', 'false')
       container.setAttribute('tabindex', '-1')
 

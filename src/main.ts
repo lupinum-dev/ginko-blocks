@@ -2,6 +2,7 @@ import type { GinkoBlocksSettings } from './settings/settings'
 import { Plugin } from 'obsidian'
 import { syntaxHighlightField } from './editor/_syntax/syntaxHighlightExtension'
 import { createAspectPreviewExtension } from './editor/aspect/aspectPreviewExtension'
+import { createFileTreeExtension } from './editor/file-tree/fileTreePostProcessor'
 import { createGalleryPreviewExtension } from './editor/gallery/galleryPreviewExtension'
 import { createLayoutPreviewExtension } from './editor/layout/layoutPreviewExtension'
 import { createStepsPreviewExtension } from './editor/steps/stepsPreviewExtension'
@@ -58,6 +59,7 @@ export default class GinkoBlocksPlugin extends Plugin {
     // this.registerEditorExtension(createNoLineBreaksExtension());
     this.registerEditorExtension(createGalleryPreviewExtension(this.app))
     this.registerEditorExtension(createAspectPreviewExtension(this.app))
+    this.registerEditorExtension(createFileTreeExtension(this.app))
   }
 
   onunload() {

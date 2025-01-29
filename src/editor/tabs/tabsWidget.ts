@@ -249,8 +249,6 @@ export class TabWidget extends BaseWidget {
       ).then(() => {
         // Remove any nested edit buttons
         content.querySelectorAll('.edit-block-button').forEach(btn => btn.remove())
-        // Ensure proper markdown styling
-        content.classList.add('markdown-rendered')
         tabContents.appendChild(content)
       })
     })

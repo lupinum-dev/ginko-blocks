@@ -78,7 +78,7 @@ export const stepsProcessor: MarkdownPostProcessor = (element: HTMLElement, cont
 
 function createStepsContainer(): HTMLElement {
   const container = document.createElement('div')
-  container.className = 'ginko-steps-container ginko-embed-block markdown-rendered show-indentation-guide ginko-steps-reading'
+  container.className = 'ginko-steps-container ginko-embed-block  show-indentation-guide ginko-steps-reading'
   container.setAttribute('contenteditable', 'false')
   container.setAttribute('tabindex', '-1')
 

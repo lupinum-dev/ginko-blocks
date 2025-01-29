@@ -1,0 +1,123 @@
+.ginko-filetree-container {
+  margin: 1rem 0;
+  padding: 1.25rem;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 12px;
+  background: var(--background-primary);
+  position: relative;
+  font-size: 0.9em;
+  max-width: fit-content;
+}
+
+/* Reset list styles */
+.ginko-filetree-container ul {
+  list-style: none !important;
+}
+
+.ginko-filetree-container li {
+  list-style: none !important;
+  text-align: left !important;
+}
+
+.ginko-filetree-list {
+  list-style: none !important;
+  padding-left: 0 !important;
+  margin: 0 !important;
+  line-height: 1.8;
+}
+
+.ginko-filetree-list .ginko-filetree-list {
+  position: relative;
+  padding-left: 0 !important;
+  margin-left: 1.75rem !important;
+  border-left: 1px solid var(--background-modifier-border);
+}
+
+.ginko-filetree-item {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 0.5rem;
+  padding: 0.125rem 0;
+  padding-left: 0.75rem;
+  color: var(--text-normal);
+  font-family: var(--font-monospace);
+  position: relative;
+  text-indent: 0 !important;
+}
+
+/* Horizontal tree line */
+.ginko-filetree-list .ginko-filetree-list .ginko-filetree-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 0.75rem;
+  height: 1px;
+  background-color: var(--background-modifier-border);
+}
+
+.ginko-filetree-item.highlighted {
+  color: var(--text-accent);
+  font-weight: 600;
+}
+
+.ginko-filetree-icon {
+  color: var(--text-muted);
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.ginko-filetree-icon svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.ginko-filetree-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-indent: 0 !important;
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+
+/* Edit button styles */
+.ginko-filetree-container .edit-block-button {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  padding: 4px;
+  border-radius: 4px;
+  color: var(--text-muted);
+  background: var(--background-secondary);
+}
+
+.ginko-filetree-container:hover .edit-block-button {
+  opacity: 0.6;
+}
+
+.ginko-filetree-container .edit-block-button:hover {
+  opacity: 1;
+  color: var(--text-normal);
+  background: var(--background-modifier-hover);
+}
+
+/* Override any external styles */
+.ginko-filetree-container * {
+  box-sizing: border-box !important;
+}
+
+.ginko-filetree-container ul,
+.ginko-filetree-container ul ul {
+  list-style-type: none !important;
+}

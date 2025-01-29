@@ -78,7 +78,7 @@ export abstract class BaseWidget extends WidgetType {
    */
   protected createContainer(className: string): HTMLElement {
     const container = document.createElement('div')
-    container.className = `${className} ginko-embed-block markdown-rendered show-indentation-guide`
+    container.className = `${className} ginko-embed-block  show-indentation-guide`
     container.setAttribute('contenteditable', 'false')
     container.setAttribute('tabindex', '-1')
     return container

@@ -194,7 +194,7 @@ function processLayoutContent(content: string[], layoutContainer: HTMLElement) {
 
 function createLayoutContainer(): HTMLElement {
   const container = document.createElement('div')
-  container.className = 'ginko-layout-container ginko-embed-block markdown-rendered show-indentation-guide'
+  container.className = 'ginko-layout-container ginko-embed-block  show-indentation-guide'
   container.setAttribute('contenteditable', 'false')
   container.setAttribute('tabindex', '-1')
 
