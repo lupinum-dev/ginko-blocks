@@ -18,7 +18,7 @@ We aim to match Obsidian's native feel while adding powerful features like tabs,
 
 ## 🚧 Work in Progress
 
-> [!CAUTION] 
+> [!CAUTION]
 > This plugin is in early development!
 > - Back up your vault before installing
 > - Expect significant changes to features and settings
@@ -86,4 +86,4 @@ We welcome contributions! Feel free to:
 
 Licensed under the Apache License, Version 2.0
 
-Copyright 2024 <a href="www.lupinum.com">Lupinum OG</a>
+Copyright 2025 <a href="www.lupinum.com">Lupinum OG</a>
