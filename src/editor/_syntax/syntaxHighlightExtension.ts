@@ -4,154 +4,275 @@ import { syntaxTree } from '@codemirror/language'
 import { RangeSetBuilder, StateField } from '@codemirror/state'
 import { Decoration, EditorView } from '@codemirror/view'
 
-// Create decorations with specific classes
+/**
+ * Configuration for syntax highlighting behavior
+ */
+const CONFIG = {
+  maxPropLength: 1000, // Prevent excessive prop parsing
+  patterns: {
+    start: /^::([\w-]+)(?:\(([^)]*)\))?$/,
+    middle: /^--[\w-]+(?:\(([^)]*)\))?(?:[ \t].*)?$/,
+    end: /^(?:::)?$/,
+  },
+  codeBlockTypes: new Set([
+    'codeblock',
+    'code_block',
+    'HyperMD-codeblock',
+  ]),
+} as const
+
+/**
+ * Types for improved type safety
+ */
+type BlockCategory = string
+type DecorationFactory = (category?: string) => Decoration
+interface DecorationFactories {
+  [key: string]: DecorationFactory
+}
+
+/**
+ * Creates a CodeMirror decoration with the specified class name.
+ * Used to apply syntax highlighting styles to different parts of the text.
+ */
 function createDecoration(className: string) {
   return Decoration.mark({
     attributes: { class: className },
   })
 }
 
-// Define our decoration types
-const decorations = {
+/**
+ * Collection of decoration factories with improved type safety
+ */
+const decorations: DecorationFactories = {
   startMarker: (category: string) => createDecoration(`ginko-blocks-syntax-marker ginko-blocks-syntax-start ginko-blocks-syntax-${category}`),
   middleMarker: (category: string) => createDecoration(`ginko-blocks-syntax-marker ginko-blocks-syntax-middle ginko-blocks-syntax-${category}`),
   endMarker: () => createDecoration('ginko-blocks-syntax-marker ginko-blocks-syntax-end'),
-  propsContainer: (category: string) => createDecoration(`ginko-blocks-syntax-props-container ginko-blocks-syntax-${category}`),
-  booleanProp: (category: string) => createDecoration(`ginko-blocks-syntax-prop-boolean ginko-blocks-syntax-${category}`),
-  propName: (category: string) => createDecoration(`ginko-blocks-syntax-prop-name ginko-blocks-syntax-${category}`),
-  propEquals: (category: string) => createDecoration(`ginko-blocks-syntax-prop-equals ginko-blocks-syntax-${category}`),
-  propValue: (category: string) => createDecoration(`ginko-blocks-syntax-prop-value ginko-blocks-syntax-${category}`),
+  propsContainer: () => createDecoration('ginko-blocks-syntax-props-container'),
+  booleanProp: () => createDecoration('ginko-blocks-syntax-prop-boolean'),
+  propName: () => createDecoration('ginko-blocks-syntax-prop-name'),
+  propEquals: () => createDecoration('ginko-blocks-syntax-prop-equals'),
+  propValue: () => createDecoration('ginko-blocks-syntax-prop-value'),
 }
 
-// Syntax patterns
-const patterns = {
-  start: /^(::)([\w-]+)(?:\((.*)\))?$/,
-  middle: /^(--\w+)(?:\((.*)\))?(.*)$/,
-  end: /^(::|)$/,
-}
-
-// Helper class to manage decorations and ensure proper sorting
+/**
+ * Manages the collection and application of decorations for syntax highlighting.
+ * Ensures decorations are applied in the correct order and prevents duplicate decorations.
+ * Tracks the state of props processing to prevent recursive decoration application.
+ */
 class DecorationManager {
   private decorations: Array<{ from: number, to: number, decoration: Decoration }> = []
+  private processedRanges: Set<string> = new Set()
+  private inProps = false
+  private errors: Error[] = []
 
   add(from: number, to: number, decoration: Decoration) {
-    this.decorations.push({ from, to, decoration })
+    try {
+      const range = `${from}-${to}`
+      if (this.processedRanges.has(range)) {
+        this.addError(new Error(`Duplicate decoration for range: ${range}`))
+        return
+      }
+      if (from < 0 || to < 0 || from > to) {
+        this.addError(new Error(`Invalid decoration range: ${from}-${to}`))
+        return
+      }
+      this.processedRanges.add(range)
+      this.decorations.push({ from, to, decoration })
+    }
+    catch (error) {
+      this.addError(error instanceof Error ? error : new Error(String(error)))
+    }
   }
 
-  // Add all decorations to builder in sorted order
+  addError(error: Error) {
+    this.errors.push(error)
+    console.warn('[DecorationManager]', error.message)
+  }
+
   applyTo(builder: RangeSetBuilder<Decoration>) {
     this.decorations.sort((a, b) => a.from - b.from || a.to - b.to)
       .forEach(({ from, to, decoration }) => {
         builder.add(from, to, decoration)
       })
   }
+
+  enterProps() {
+    this.inProps = true
+  }
+
+  exitProps() {
+    this.inProps = false
+  }
+
+  isInProps() {
+    return this.inProps
+  }
+
+  getErrors(): readonly Error[] {
+    return [...this.errors]
+  }
 }
 
+/**
+ * Processes and decorates properties within block markers.
+ * Handles both string props (key="value") and boolean props (flag).
+ *
+ * The function carefully parses the props section to apply appropriate decorations
+ * while avoiding infinite loops and handling edge cases. It uses a position-based
+ * approach to process each prop sequentially.
+ *
+ * @param manager - The decoration manager instance
+ * @param lineStart - The starting position of the current line
+ * @param text - The full text of the line containing props
+ * @param _category - The block category
+ */
 function processProps(
   manager: DecorationManager,
   lineStart: number,
   text: string,
-  category: string,
+  _category: BlockCategory,
 ): void {
-  const propsStart = text.indexOf('(')
-  const propsEnd = text.lastIndexOf(')')
+  try {
+    const propsStart = text.indexOf('(')
+    const propsEnd = text.lastIndexOf(')')
 
-  if (propsStart === -1 || propsEnd === -1)
-    return
+    if (propsStart === -1 || propsEnd === -1 || propsEnd <= propsStart) {
+      return
+    }
 
-  // Add container decoration for entire props section
-  manager.add(
-    lineStart + propsStart,
-    lineStart + propsEnd + 1,
-    decorations.propsContainer(category),
-  )
+    const propsContent = text.slice(propsStart + 1, propsEnd)
+    if (propsContent.length > CONFIG.maxPropLength) {
+      manager.addError(new Error(`Props content exceeds maximum length of ${CONFIG.maxPropLength}`))
+      return
+    }
 
-  // Process the props content
-  const propsContent = text.slice(propsStart + 1, propsEnd)
-  let pos = 0
+    manager.enterProps()
 
-  while (pos < propsContent.length) {
-    // Skip whitespace
-    while (pos < propsContent.length && /\s/.test(propsContent[pos])) pos++
-    if (pos >= propsContent.length)
-      break
+    manager.add(
+      lineStart + propsStart,
+      lineStart + propsEnd + 1,
+      decorations.propsContainer(),
+    )
 
-    // Find prop name
-    const nameStart = pos
-    while (pos < propsContent.length && /[\w-]/.test(propsContent[pos])) pos++
-    const name = propsContent.slice(nameStart, pos)
+    let pos = 0
 
-    // Skip whitespace after name
-    while (pos < propsContent.length && /\s/.test(propsContent[pos])) pos++
+    while (pos < propsContent.length) {
+      const startPos = pos
 
-    // Check if it's a string prop
-    if (pos < propsContent.length && propsContent[pos] === '=') {
-      // String prop
-      const equalsPos = pos
-      pos++ // Skip equals
+      while (pos < propsContent.length && /\s/.test(propsContent[pos])) pos++
+      if (pos >= propsContent.length)
+        break
 
-      // Skip whitespace after equals
+      const nameStart = pos
+      while (pos < propsContent.length && /[\w-]/.test(propsContent[pos])) pos++
+      const name = propsContent.slice(nameStart, pos)
+
+      if (!name) {
+        pos++
+        continue
+      }
+
       while (pos < propsContent.length && /\s/.test(propsContent[pos])) pos++
 
-      if (pos < propsContent.length && propsContent[pos] === '"') {
-        const valueStart = pos
-        pos++ // Skip opening quote
+      if (pos < propsContent.length && propsContent[pos] === '=') {
+        const equalsPos = pos
+        pos++
 
-        // Find closing quote
-        while (pos < propsContent.length && propsContent[pos] !== '"') pos++
-        if (pos < propsContent.length)
-          pos++ // Skip closing quote
+        while (pos < propsContent.length && /\s/.test(propsContent[pos])) pos++
 
-        // Add decorations in order
+        if (pos < propsContent.length && propsContent[pos] === '"') {
+          const valueStart = pos
+          pos++
+
+          while (pos < propsContent.length && propsContent[pos] !== '"') pos++
+          if (pos < propsContent.length)
+            pos++
+
+          manager.add(
+            lineStart + propsStart + 1 + nameStart,
+            lineStart + propsStart + 1 + nameStart + name.length,
+            decorations.propName(),
+          )
+
+          manager.add(
+            lineStart + propsStart + 1 + equalsPos,
+            lineStart + propsStart + 1 + equalsPos + 1,
+            decorations.propEquals(),
+          )
+
+          manager.add(
+            lineStart + propsStart + 1 + valueStart,
+            lineStart + propsStart + 1 + pos,
+            decorations.propValue(),
+          )
+        }
+      }
+      else {
         manager.add(
           lineStart + propsStart + 1 + nameStart,
-          lineStart + propsStart + 1 + nameStart + name.length,
-          decorations.propName(category),
-        )
-
-        manager.add(
-          lineStart + propsStart + 1 + equalsPos,
-          lineStart + propsStart + 1 + equalsPos + 1,
-          decorations.propEquals(category),
-        )
-
-        manager.add(
-          lineStart + propsStart + 1 + valueStart,
           lineStart + propsStart + 1 + pos,
-          decorations.propValue(category),
+          decorations.booleanProp(),
         )
       }
-    }
-    else {
-      // Boolean prop
-      manager.add(
-        lineStart + propsStart + 1 + nameStart,
-        lineStart + propsStart + 1 + pos,
-        decorations.booleanProp(category),
-      )
-    }
 
-    // Skip to next prop
-    while (pos < propsContent.length && /[\s,]/.test(propsContent[pos])) pos++
+      while (pos < propsContent.length && /[\s,]/.test(propsContent[pos])) pos++
+
+      if (pos === startPos) {
+        break
+      }
+    }
+  }
+  catch (error) {
+    manager.addError(error instanceof Error ? error : new Error(String(error)))
+  }
+  finally {
+    manager.exitProps()
   }
 }
 
+/**
+ * Determines if a given position in the document is inside a code block.
+ * This is crucial for preventing syntax highlighting within code blocks
+ * where the markers should be treated as literal text.
+ *
+ * @param transaction - The current CodeMirror transaction
+ * @param pos - The position to check
+ * @returns true if the position is inside a code block
+ */
 function isInCodeBlock(transaction: Transaction, pos: number): boolean {
-  const tree = syntaxTree(transaction.state)
-  let currentNode = tree.resolveInner(pos, 1)
+  try {
+    const tree = syntaxTree(transaction.state)
+    let currentNode = tree.resolveInner(pos, 1)
 
-  // Check if we're inside a code block
-  while (currentNode && currentNode.parent) { // Add null check for parent
-    if (currentNode.type.name.includes('codeblock')
-      || currentNode.type.name.includes('code_block')
-      || currentNode.type.name.includes('HyperMD-codeblock')) {
-      return true
+    while (currentNode && currentNode.parent) {
+      if (CONFIG.codeBlockTypes.has(currentNode.type.name)) {
+        return true
+      }
+      currentNode = currentNode.parent
     }
-    currentNode = currentNode.parent
+    return false
   }
-  return false
+  catch (error) {
+    console.warn('[isInCodeBlock]', error)
+    return false // Fail safe - better to not highlight than crash
+  }
 }
 
+/**
+ * CodeMirror state field that manages syntax highlighting for block markers.
+ * This field tracks and updates decorations as the document changes.
+ *
+ * The field processes the document line by line, identifying and decorating:
+ * - Block start markers (::type)
+ * - Block continuation markers (--type)
+ * - Block end markers (::)
+ * - Properties within markers
+ *
+ * It carefully handles edge cases and prevents decoration conflicts by:
+ * - Skipping code blocks
+ * - Preventing recursive decoration in props
+ * - Managing decoration ranges to avoid overlaps
+ */
 export const syntaxHighlightField = StateField.define<DecorationSet>({
   create() {
     return Decoration.none
@@ -163,7 +284,6 @@ export const syntaxHighlightField = StateField.define<DecorationSet>({
     for (let pos = 0; pos < tr.state.doc.length;) {
       const line = tr.state.doc.lineAt(pos)
 
-      // Skip if we're in a code block
       if (isInCodeBlock(tr, line.from)) {
         pos = line.to + 1
         continue
@@ -171,11 +291,11 @@ export const syntaxHighlightField = StateField.define<DecorationSet>({
 
       const text = line.text.trim()
 
-      // Start marker
-      const startMatch = text.match(patterns.start)
-      if (startMatch) {
-        const [full, marker, category] = startMatch
-        const markerLength = marker.length + category.length
+      const startMatch = text.match(CONFIG.patterns.start)
+      if (startMatch && !manager.isInProps()) {
+        const [_, _marker, category] = startMatch
+        const markerEnd = text.indexOf('(')
+        const markerLength = markerEnd > -1 ? markerEnd : text.length
 
         manager.add(
           line.from,
@@ -188,15 +308,16 @@ export const syntaxHighlightField = StateField.define<DecorationSet>({
         }
       }
 
-      // Middle marker
-      const middleMatch = text.match(patterns.middle)
-      if (middleMatch) {
-        const [full, marker] = middleMatch
+      const middleMatch = text.match(CONFIG.patterns.middle)
+      if (middleMatch && !manager.isInProps()) {
+        const [_, marker] = middleMatch
         const category = marker.slice(2)
+        const markerEnd = text.indexOf('(')
+        const markerLength = markerEnd > -1 ? markerEnd : marker.length
 
         manager.add(
           line.from,
-          line.from + marker.length,
+          line.from + markerLength,
           decorations.middleMarker(category),
         )
 
@@ -205,9 +326,8 @@ export const syntaxHighlightField = StateField.define<DecorationSet>({
         }
       }
 
-      // End marker
-      const endMatch = text.match(patterns.end)
-      if (endMatch) {
+      const endMatch = text.match(CONFIG.patterns.end)
+      if (endMatch && !manager.isInProps()) {
         manager.add(
           line.from,
           line.to,
@@ -218,7 +338,6 @@ export const syntaxHighlightField = StateField.define<DecorationSet>({
       pos = line.to + 1
     }
 
-    // Apply all decorations in sorted order
     manager.applyTo(builder)
     return builder.finish()
   },
