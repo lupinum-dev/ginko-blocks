@@ -2,7 +2,7 @@ import type { WorkspaceLeaf } from 'obsidian'
 import { ItemView, MarkdownRenderer } from 'obsidian'
 
 export const WELCOME_VIEW_TYPE = 'ginko-blocks-welcome-view'
-export const CURRENT_WELCOME_VERSION = '0.0.5' // Increment this when you want to show the welcome screen again
+export const CURRENT_WELCOME_VERSION = '0.0.6' // Increment this when you want to show the welcome screen again
 const STORAGE_KEY = `ginko-blocks-welcome-shown-v${CURRENT_WELCOME_VERSION}`
 
 export class WelcomeView extends ItemView {
