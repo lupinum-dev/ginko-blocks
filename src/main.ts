@@ -59,7 +59,7 @@ export default class GinkoBlocksPlugin extends Plugin {
   }
 
   onunload() {
-    // Unregister the welcome view type
+    // Unregister the welcome view type by detaching leaves
     this.app.workspace.detachLeavesOfType(WELCOME_VIEW_TYPE)
   }
 
