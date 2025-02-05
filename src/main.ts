@@ -30,15 +30,6 @@ export default class GinkoBlocksPlugin extends Plugin {
     // Show welcome view on first load
     await this.activateWelcomeView()
 
-    // This adds an editor command that can perform some operation on the current editor instance
-    // this.addCommand({
-    //   id: 'ginko-blocks-editor-command',
-    //   name: 'Ginko Blocks editor command',
-    //   editorCallback: (editor: Editor, _: MarkdownView) => {
-    //     editor.replaceSelection('Sample Editor Command')
-    //   },
-    // })
-
     // This adds a settings tab so the user can configure various aspects of the plugin
     this.addSettingTab(new GinkoBlocksSettingTab(this.app, this))
   }
@@ -61,6 +52,9 @@ export default class GinkoBlocksPlugin extends Plugin {
   onunload() {
     // Unregister the welcome view type by detaching leaves
     this.app.workspace.detachLeavesOfType(WELCOME_VIEW_TYPE)
+
+    // Force editor refresh to clean up extensions
+    this.app.workspace.updateOptions()
   }
 
   async loadSettings() {

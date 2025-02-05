@@ -12,7 +12,7 @@ const CONFIG = {
   patterns: {
     start: /^::([\w-]+)(?:\(([^)]*)\))?$/,
     middle: /^--[\w-]+(?:\(([^)]*)\))?(?:[ \t].*)?$/,
-    end: /^(?:::)?$/,
+    end: /^::$/, // Only match exactly '::'
   },
   codeBlockTypes: new Set([
     'codeblock',
@@ -52,6 +52,7 @@ const decorations: DecorationFactories = {
   propName: () => createDecoration('ginko-blocks-syntax-prop-name'),
   propEquals: () => createDecoration('ginko-blocks-syntax-prop-equals'),
   propValue: () => createDecoration('ginko-blocks-syntax-prop-value'),
+  content: () => createDecoration('ginko-blocks-syntax-content'),
 }
 
 /**
@@ -277,70 +278,87 @@ export const syntaxHighlightField = StateField.define<DecorationSet>({
   create() {
     return Decoration.none
   },
+
   update(oldState: DecorationSet, tr: Transaction) {
-    const builder = new RangeSetBuilder<Decoration>()
-    const manager = new DecorationManager()
+    try {
+      const builder = new RangeSetBuilder<Decoration>()
+      const manager = new DecorationManager()
 
-    for (let pos = 0; pos < tr.state.doc.length;) {
-      const line = tr.state.doc.lineAt(pos)
+      if (!tr.state || !tr.state.doc) {
+        return oldState
+      }
 
-      if (isInCodeBlock(tr, line.from)) {
+      const docText = tr.state.doc.toString()
+      let pos = 0
+
+      while (pos < docText.length) {
+        const line = tr.state.doc.lineAt(pos)
+        const lineText = line.text
+
+        if (!lineText) {
+          pos = line.to + 1
+          continue
+        }
+
+        // Skip if we're in a code block
+        if (isInCodeBlock(tr, line.from)) {
+          pos = line.to + 1
+          continue
+        }
+
+        const startMatch = CONFIG.patterns.start.exec(lineText.trim())
+        const middleMatch = CONFIG.patterns.middle.exec(lineText.trim())
+        const endMatch = CONFIG.patterns.end.exec(lineText.trim())
+
+        if (startMatch) {
+          // Highlight the start marker (::type)
+          const markerEnd = lineText.includes('(') ? lineText.indexOf('(') : lineText.includes(' ') ? lineText.indexOf(' ') : lineText.length
+          manager.add(line.from, line.from + markerEnd, decorations.startMarker(startMatch[1]))
+
+          // Process props if they exist
+          if (startMatch[2]) {
+            processProps(manager, line.from, lineText, startMatch[1])
+          }
+
+          // Highlight remaining content
+          const contentStart = lineText.includes(')') ? lineText.indexOf(')') + 1 : markerEnd
+          if (contentStart < lineText.length) {
+            manager.add(line.from + contentStart, line.to, decorations.content())
+          }
+        }
+        else if (middleMatch) {
+          // Highlight the middle marker (--type)
+          const markerEnd = lineText.includes('(') ? lineText.indexOf('(') : lineText.includes(' ') ? lineText.indexOf(' ') : lineText.length
+          const category = lineText.trim().slice(2, markerEnd).trim()
+          manager.add(line.from, line.from + markerEnd, decorations.middleMarker(category))
+
+          // Process props if they exist
+          if (middleMatch[1]) {
+            processProps(manager, line.from, lineText, category)
+          }
+
+          // Highlight remaining content
+          const contentStart = lineText.includes(')') ? lineText.indexOf(')') + 1 : markerEnd
+          if (contentStart < lineText.length) {
+            manager.add(line.from + contentStart, line.to, decorations.content())
+          }
+        }
+        else if (endMatch) {
+          manager.add(line.from, line.to, decorations.endMarker())
+        }
+
         pos = line.to + 1
-        continue
       }
 
-      const text = line.text.trim()
-
-      const startMatch = text.match(CONFIG.patterns.start)
-      if (startMatch && !manager.isInProps()) {
-        const [_, _marker, category] = startMatch
-        const markerEnd = text.indexOf('(')
-        const markerLength = markerEnd > -1 ? markerEnd : text.length
-
-        manager.add(
-          line.from,
-          line.from + markerLength,
-          decorations.startMarker(category),
-        )
-
-        if (text.includes('(')) {
-          processProps(manager, line.from, text, category)
-        }
-      }
-
-      const middleMatch = text.match(CONFIG.patterns.middle)
-      if (middleMatch && !manager.isInProps()) {
-        const [_, marker] = middleMatch
-        const category = marker.slice(2)
-        const markerEnd = text.indexOf('(')
-        const markerLength = markerEnd > -1 ? markerEnd : marker.length
-
-        manager.add(
-          line.from,
-          line.from + markerLength,
-          decorations.middleMarker(category),
-        )
-
-        if (text.includes('(')) {
-          processProps(manager, line.from, text, category)
-        }
-      }
-
-      const endMatch = text.match(CONFIG.patterns.end)
-      if (endMatch && !manager.isInProps()) {
-        manager.add(
-          line.from,
-          line.to,
-          decorations.endMarker(),
-        )
-      }
-
-      pos = line.to + 1
+      manager.applyTo(builder)
+      return builder.finish()
     }
-
-    manager.applyTo(builder)
-    return builder.finish()
+    catch (error) {
+      console.warn('[syntaxHighlightField]', error)
+      return oldState
+    }
   },
+
   provide(field) {
     return EditorView.decorations.from(field)
   },

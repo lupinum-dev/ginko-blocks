@@ -7,6 +7,7 @@
   font-weight: 300;
   font-size: 14px;
   line-height: 22px;
+
 }
 
 /* Main syntax markers */
@@ -60,3 +61,4 @@
   color: #c41e3a;  /* Crimson for string values */
   font-style: normal;
 }
+
