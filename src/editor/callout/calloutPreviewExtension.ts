@@ -11,16 +11,25 @@ import { CalloutWidget } from './calloutWidget'
 export const toggleCalloutEdit = StateEffect.define<{ id: string, value: boolean }>()
 
 /**
- * Extension for handling callout preview functionality
+ * Valid callout types that we want to handle
  */
-class CalloutPreviewExtension extends BasePreviewExtension<CalloutWidget> {
-  constructor(app: App) {
+const VALID_CALLOUT_TYPES = ['tip', 'info', 'warning', 'danger', 'note'] as const
+type CalloutType = typeof VALID_CALLOUT_TYPES[number]
+
+/**
+ * Extension for handling a specific callout type
+ */
+class SingleCalloutPreviewExtension extends BasePreviewExtension<CalloutWidget> {
+  private readonly calloutType: CalloutType
+
+  constructor(app: App, type: CalloutType) {
     const config: PreviewExtensionConfig = {
-      startTag: '::', // We'll handle the specific callout types in the widget
+      startTag: `::${type}`,
       endTag: '::',
-      fieldName: 'calloutPreview',
+      fieldName: `calloutPreview-${type}`,
     }
     super(app, config)
+    this.calloutType = type
   }
 
   protected processContentBlock(content: string): string {
@@ -40,10 +49,8 @@ class CalloutPreviewExtension extends BasePreviewExtension<CalloutWidget> {
   }
 
   protected shouldHandleBlock(content: string): boolean {
-    // Check if the content starts with a valid callout type
-    const validTypes = ['tip', 'info', 'warning', 'danger', 'note']
-    const match = content.match(/^::(\w+)(-)?/)
-    return match ? validTypes.includes(match[1]) : false
+    // Only handle blocks that exactly match our type
+    return content.startsWith(`::${this.calloutType}`)
   }
 }
 
@@ -51,6 +58,8 @@ class CalloutPreviewExtension extends BasePreviewExtension<CalloutWidget> {
  * Creates the callout preview extension with the given Obsidian app instance
  */
 export function createCalloutPreviewExtension(app: App): Extension[] {
-  const extension = new CalloutPreviewExtension(app)
-  return extension.createExtension()
+  // Create an extension for each callout type
+  return VALID_CALLOUT_TYPES.flatMap(type =>
+    new SingleCalloutPreviewExtension(app, type).createExtension()
+  )
 }
