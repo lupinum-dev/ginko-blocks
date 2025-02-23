@@ -33,7 +33,6 @@ class StepsPreviewExtension extends BasePreviewExtension<StepsWidget> {
 
   protected processContentBlock(content: string, startPos: number, endPos: number): void {
     // Basic implementation - can be enhanced based on specific needs
-    console.log('Processing steps content block:', { content, startPos, endPos })
   }
 }
 

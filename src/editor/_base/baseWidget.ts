@@ -2,7 +2,7 @@ import type { EditorView } from '@codemirror/view'
 import type { App } from 'obsidian'
 import { randomUUID } from 'node:crypto'
 import { WidgetType } from '@codemirror/view'
-import { hashContent, logDebug } from '../utils'
+
 
 export interface BaseWidgetConfig {
   content: string
@@ -27,12 +27,7 @@ export abstract class BaseWidget extends WidgetType {
     this.id = id
     this.app = app
 
-    logDebug(`${this.constructor.name} constructor called:`, {
-      instanceId: this.instanceId,
-      widgetId: id,
-      contentHash: hashContent(content),
-      time: new Date().toISOString(),
-    })
+
   }
 
   /**

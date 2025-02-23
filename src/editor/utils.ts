@@ -76,19 +76,16 @@ export function getNextRegion(
   startTag: string,
   endTag: string,
 ): RegionData | null {
-  console.log('TEST: getNextRegion - startTag:', startTag, 'endTag:', endTag)
-  console.log('TEST: workingText start:', `${workingText.substring(0, 50)}...`)
+
 
   const startPosition = workingText.indexOf(startTag)
   if (startPosition === -1) {
-    console.log('TEST: No start tag found')
     return null
   }
 
   const searchStartIndex = startPosition + startTag.length
   const endPosition = workingText.indexOf(endTag, searchStartIndex)
   if (endPosition === -1) {
-    console.log('TEST: No end tag found')
     return null
   }
 
@@ -102,11 +99,7 @@ export function getNextRegion(
     endIndex,
   }
 
-  console.log('TEST: Found region:', {
-    startIndex,
-    endIndex,
-    regionTextPreview: `${region.regionText.substring(0, 50)}...`,
-  })
+
 
   return region
 }
@@ -214,12 +207,6 @@ export function getRegionByTags(
   return getNextRegion(workingText, startOffset, wholeDoc, startTag, endTag)
 }
 
-/**
- * Add a utility function for logging
- */
-export function logDebug(message: string, data: any): void {
-  console.debug(message, data)
-}
 
 /**
  * Add a utility function to parse columns

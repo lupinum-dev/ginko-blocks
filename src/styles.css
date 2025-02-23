@@ -9,5 +9,6 @@
 @import url("src/settings/settings.css");
 @import url("src/settings/resetModal.css");
 @import url("src/editor/_syntax/syntax.css");
+@import url("src/editor/callout/callout.css");
 
 

@@ -239,7 +239,7 @@ export class TabWidget extends BaseWidget {
       const content = this.createTabContent(tab, index)
 
       const markdownChild = new MarkdownRenderChild(content)
-      console.log('🔴 Rendering tab content:', tab.content.trim())
+
       MarkdownRenderer.render(
         this.app,
         tab.content.trim(),
