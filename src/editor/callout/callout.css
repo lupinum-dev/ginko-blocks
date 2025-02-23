@@ -1,0 +1,155 @@
+.ginko-callout {
+  position: relative;
+  margin: 1em 0;
+  padding: 1em;
+  border-radius: var(--radius-m);
+  border-left: 4px solid;
+  background-color: var(--background-primary);
+  transition: background-color 150ms ease-in-out;
+}
+
+.ginko-callout:hover {
+  background-color: var(--background-secondary);
+}
+
+.ginko-callout-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5em;
+  gap: 0.5em;
+}
+
+.ginko-callout-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+}
+
+.ginko-callout-icon svg {
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+}
+
+.ginko-callout-title {
+  font-weight: 600;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+/* Originally collapsed indicator */
+.ginko-callout-title .originally-collapsed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+}
+
+.ginko-callout-title .originally-collapsed svg {
+  width: 14px;
+  height: 14px;
+}
+
+.ginko-callout-collapse {
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 150ms ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ginko-callout-collapse:hover {
+  opacity: 1;
+}
+
+.ginko-callout-collapse svg {
+  width: 20px;
+  height: 20px;
+  color: var(--text-muted);
+}
+
+.ginko-callout-content {
+  overflow: hidden;
+  transition: max-height 200ms ease-out;
+  margin-top: 0.5em;
+  padding-left: 0.5em;
+}
+
+.ginko-callout.is-collapsed .ginko-callout-content {
+  max-height: 0;
+  margin-top: 0;
+}
+
+/* Callout Types */
+.ginko-callout.type-tip {
+  border-color: var(--color-green);
+  background-color: rgba(var(--color-green-rgb), 0.05);
+}
+
+.ginko-callout.type-info {
+  border-color: var(--color-blue);
+  background-color: rgba(var(--color-blue-rgb), 0.05);
+}
+
+.ginko-callout.type-warning {
+  border-color: var(--color-orange);
+  background-color: rgba(var(--color-orange-rgb), 0.05);
+}
+
+.ginko-callout.type-danger {
+  border-color: var(--color-red);
+  background-color: rgba(var(--color-red-rgb), 0.05);
+}
+
+.ginko-callout.type-note {
+  border-color: var(--color-purple);
+  background-color: rgba(var(--color-purple-rgb), 0.05);
+}
+
+/* Icon colors for each type */
+.ginko-callout.type-tip .ginko-callout-icon svg {
+  color: var(--color-green);
+}
+
+.ginko-callout.type-info .ginko-callout-icon svg {
+  color: var(--color-blue);
+}
+
+.ginko-callout.type-warning .ginko-callout-icon svg {
+  color: var(--color-orange);
+}
+
+.ginko-callout.type-danger .ginko-callout-icon svg {
+  color: var(--color-red);
+}
+
+.ginko-callout.type-note .ginko-callout-icon svg {
+  color: var(--color-purple);
+}
+
+/* Originally collapsed indicator colors */
+.ginko-callout.type-tip .originally-collapsed svg {
+  color: var(--color-green);
+}
+
+.ginko-callout.type-info .originally-collapsed svg {
+  color: var(--color-blue);
+}
+
+.ginko-callout.type-warning .originally-collapsed svg {
+  color: var(--color-orange);
+}
+
+.ginko-callout.type-danger .originally-collapsed svg {
+  color: var(--color-red);
+}
+
+.ginko-callout.type-note .originally-collapsed svg {
+  color: var(--color-purple);
+}

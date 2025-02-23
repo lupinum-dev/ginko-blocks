@@ -14,6 +14,7 @@ import {
   parseBlockProperties,
   parseTabProperties,
 } from '../utils'
+import { getBlockState, setBlockState } from '../utils/blockState'
 
 /**
  * Represents a single tab's data structure
@@ -38,11 +39,13 @@ export class TabWidget extends BaseWidget {
   private readonly properties: BlockProperties
   private activeTab: number
   private isEditing: boolean
+  protected content: string // Changed to protected to match base class
   static readonly toggleEdit = StateEffect.define<boolean>()
 
   constructor(content: string, id: string, isEditing: boolean, app: App) {
     super({ content, id, app })
     this.isEditing = isEditing
+    this.content = content
     this.properties = this.parseTabBlockProperties(content)
     this.tabs = this.parseTabs(content)
     this.activeTab = this.loadActiveTab()
@@ -53,42 +56,12 @@ export class TabWidget extends BaseWidget {
     return match ? parseBlockProperties(content, /::tabs\((.*?)\)/) : {}
   }
 
-  /**
-   * Generates a storage key for persisting tab state in localStorage
-   */
-  private getStorageKey(): string {
-    return `tabs.${this.id}`
-  }
-
-  /**
-   * Persists the active tab index to localStorage
-   */
-  private saveActiveTab(index: number): void {
-    try {
-      localStorage.setItem(this.getStorageKey(), index.toString())
-    }
-    catch (e) {
-      console.warn('Failed to save tab state:', e)
-    }
-  }
-
-  /**
-   * Retrieves the previously saved active tab index
-   */
   private loadActiveTab(): number {
-    try {
-      const stored = localStorage.getItem(this.getStorageKey())
-      if (stored !== null) {
-        const index = Number.parseInt(stored)
-        if (index >= 0 && index < this.tabs.length) {
-          return index
-        }
-      }
-    }
-    catch (e) {
-      console.warn('Failed to load tab state:', e)
-    }
-    return 0
+    return getBlockState<number>(this.id, 'tab', 0)
+  }
+
+  private saveActiveTab(index: number): void {
+    setBlockState<number>(this.id, 'tab', index)
   }
 
   /**
@@ -141,7 +114,8 @@ export class TabWidget extends BaseWidget {
     return Object.freeze(tabs)
   }
 
-  eq(other: TabWidget): boolean {
+  eq(other: BaseWidget): boolean {
+    if (!(other instanceof TabWidget)) return false
     return this.id === other.id
       && this.content === other.content
       && this.activeTab === other.activeTab
@@ -239,7 +213,6 @@ export class TabWidget extends BaseWidget {
       const content = this.createTabContent(tab, index)
 
       const markdownChild = new MarkdownRenderChild(content)
-
       MarkdownRenderer.render(
         this.app,
         tab.content.trim(),

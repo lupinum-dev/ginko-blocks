@@ -10,13 +10,17 @@ import { tabsProcessor } from './editor/tabs/tabsPostProcessor'
 import { createTabPreviewExtension } from './editor/tabs/tabsPreviewExtension'
 import { DEFAULT_SETTINGS, GinkoBlocksSettingTab } from './settings/settings'
 import { CURRENT_WELCOME_VERSION, WELCOME_VIEW_TYPE, WelcomeView } from './welcome/welcomeView'
-
+import { createCalloutPreviewExtension } from './editor/callout/calloutPreviewExtension'
+import { cleanupExpiredStates } from './editor/utils/blockState'
 // Remember to rename these classes and interfaces!
 
 export default class GinkoBlocksPlugin extends Plugin {
   settings: GinkoBlocksSettings
 
   async onload() {
+    // Clean up expired block states on plugin load
+    cleanupExpiredStates()
+
     await this.loadSettings()
 
     // Register the welcome view type
@@ -39,6 +43,7 @@ export default class GinkoBlocksPlugin extends Plugin {
    */
   private registerEditorExtensions() {
     this.registerEditorExtension(createTabPreviewExtension(this.app))
+    this.registerEditorExtension(createCalloutPreviewExtension(this.app))
     this.registerMarkdownPostProcessor(tabsProcessor)
     this.registerEditorExtension(syntaxHighlightField)
     this.registerEditorExtension(createLayoutPreviewExtension(this.app))
