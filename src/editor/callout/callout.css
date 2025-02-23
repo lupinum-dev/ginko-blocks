@@ -1,6 +1,6 @@
 .ginko-callout {
   position: relative;
-  margin: 1em 0;
+  margin: -1em 0;
   padding: 1em;
   border-radius: var(--radius-m);
   border-left: 4px solid;
