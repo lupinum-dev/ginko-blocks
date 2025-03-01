@@ -13,6 +13,8 @@ const CONFIG = {
     start: /^::([\w-]+)(?:\(([^)]*)\))?$/,
     middle: /^--[\w-]+(?:\(([^)]*)\))?(?:[ \t].*)?$/,
     end: /^::$/, // Only match exactly '::'
+    singleLine: /^:([\w-]+)(?:\(([^)]*)\))?(?:[ \t].*)?$/,  // Match :component-name with optional props
+    inline: /:([\w-]+)(?:\(([^)]*)\))?/,  // Match :component-name with optional props inline (non-global)
   },
   codeBlockTypes: new Set([
     'codeblock',
@@ -47,6 +49,8 @@ const decorations: DecorationFactories = {
   startMarker: (category: string) => createDecoration(`ginko-blocks-syntax-marker ginko-blocks-syntax-start ginko-blocks-syntax-${category}`),
   middleMarker: (category: string) => createDecoration(`ginko-blocks-syntax-marker ginko-blocks-syntax-middle ginko-blocks-syntax-${category}`),
   endMarker: () => createDecoration('ginko-blocks-syntax-marker ginko-blocks-syntax-end'),
+  singleLineMarker: (category: string) => createDecoration(`ginko-blocks-syntax-marker ginko-blocks-syntax-single ginko-blocks-syntax-${category}`),
+  inlineMarker: (category: string) => createDecoration(`ginko-blocks-syntax-marker ginko-blocks-syntax-inline ginko-blocks-syntax-${category}`),
   propsContainer: () => createDecoration('ginko-blocks-syntax-props-container'),
   booleanProp: () => createDecoration('ginko-blocks-syntax-prop-boolean'),
   propName: () => createDecoration('ginko-blocks-syntax-prop-name'),
@@ -309,6 +313,7 @@ export const syntaxHighlightField = StateField.define<DecorationSet>({
         const startMatch = CONFIG.patterns.start.exec(lineText.trim())
         const middleMatch = CONFIG.patterns.middle.exec(lineText.trim())
         const endMatch = CONFIG.patterns.end.exec(lineText.trim())
+        const singleLineMatch = CONFIG.patterns.singleLine.exec(lineText.trim())
 
         if (startMatch) {
           // Highlight the start marker (::type)
@@ -345,6 +350,139 @@ export const syntaxHighlightField = StateField.define<DecorationSet>({
         }
         else if (endMatch) {
           manager.add(line.from, line.to, decorations.endMarker())
+        }
+        else if (singleLineMatch) {
+          // Highlight the single line marker (:type)
+          const markerStart = lineText.indexOf(':')
+          const markerEnd = lineText.includes('(') ? lineText.indexOf('(') : lineText.includes(' ') ? lineText.indexOf(' ') : lineText.length
+
+          manager.add(
+            line.from + markerStart,
+            line.from + markerEnd,
+            decorations.singleLineMarker(singleLineMatch[1])
+          )
+
+          // Process props if they exist
+          if (singleLineMatch[2]) {
+            processProps(manager, line.from, lineText, singleLineMatch[1])
+          }
+
+          // Highlight remaining content
+          const contentStart = lineText.includes(')') ? lineText.indexOf(')') + 1 : markerEnd
+          if (contentStart < lineText.length) {
+            manager.add(line.from + contentStart, line.to, decorations.content())
+          }
+        }
+        else {
+          // Check for inline components
+          const inlinePattern = CONFIG.patterns.inline.source
+          const inlineRegex = new RegExp(inlinePattern, 'g')
+          let inlineMatch
+
+          while ((inlineMatch = inlineRegex.exec(lineText)) !== null) {
+            const matchStart = inlineMatch.index
+            const componentName = inlineMatch[1]
+            const fullMatch = inlineMatch[0]
+
+            // Calculate the end of the component name
+            const nameEnd = matchStart + 1 + componentName.length
+
+            // Highlight the component name
+            manager.add(
+              line.from + matchStart,
+              line.from + nameEnd,
+              decorations.inlineMarker(componentName)
+            )
+
+            // Process props if they exist
+            if (inlineMatch[2]) {
+              const propsText = inlineMatch[2]
+              const propsStart = fullMatch.indexOf('(')
+              const propsEnd = fullMatch.lastIndexOf(')')
+
+              if (propsStart !== -1 && propsEnd !== -1) {
+                // Add the props container decoration
+                manager.add(
+                  line.from + matchStart + propsStart,
+                  line.from + matchStart + propsEnd + 1,
+                  decorations.propsContainer()
+                )
+
+                // Process individual props
+                let pos = 0
+                while (pos < propsText.length) {
+                  const startPos = pos
+
+                  // Skip whitespace
+                  while (pos < propsText.length && /\s/.test(propsText[pos])) pos++
+                  if (pos >= propsText.length) break
+
+                  // Find prop name
+                  const nameStart = pos
+                  while (pos < propsText.length && /[\w-]/.test(propsText[pos])) pos++
+                  const name = propsText.slice(nameStart, pos)
+
+                  if (!name) {
+                    pos++
+                    continue
+                  }
+
+                  // Skip whitespace
+                  while (pos < propsText.length && /\s/.test(propsText[pos])) pos++
+
+                  if (pos < propsText.length && propsText[pos] === '=') {
+                    const equalsPos = pos
+                    pos++
+
+                    // Skip whitespace
+                    while (pos < propsText.length && /\s/.test(propsText[pos])) pos++
+
+                    if (pos < propsText.length && propsText[pos] === '"') {
+                      const valueStart = pos
+                      pos++
+
+                      // Find end of value
+                      while (pos < propsText.length && propsText[pos] !== '"') pos++
+                      if (pos < propsText.length) pos++
+
+                      // Add decorations for name, equals, and value
+                      manager.add(
+                        line.from + matchStart + propsStart + 1 + nameStart,
+                        line.from + matchStart + propsStart + 1 + nameStart + name.length,
+                        decorations.propName()
+                      )
+
+                      manager.add(
+                        line.from + matchStart + propsStart + 1 + equalsPos,
+                        line.from + matchStart + propsStart + 1 + equalsPos + 1,
+                        decorations.propEquals()
+                      )
+
+                      manager.add(
+                        line.from + matchStart + propsStart + 1 + valueStart,
+                        line.from + matchStart + propsStart + 1 + pos,
+                        decorations.propValue()
+                      )
+                    }
+                  } else {
+                    // Boolean prop
+                    manager.add(
+                      line.from + matchStart + propsStart + 1 + nameStart,
+                      line.from + matchStart + propsStart + 1 + pos,
+                      decorations.booleanProp()
+                    )
+                  }
+
+                  // Skip to next prop
+                  while (pos < propsText.length && /[\s,]/.test(propsText[pos])) pos++
+
+                  if (pos === startPos) {
+                    break
+                  }
+                }
+              }
+            }
+          }
         }
 
         pos = line.to + 1

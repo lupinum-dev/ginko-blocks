@@ -29,6 +29,25 @@
   border: 1px solid rgba(211, 47, 47, 0.2);
 }
 
+/* Single-line component styles */
+.ginko-blocks-syntax-single {
+  color: #9c27b0;
+  background: linear-gradient(to right, rgba(156, 39, 176, 0.08), rgba(156, 39, 176, 0.12));
+  border: 1px solid rgba(156, 39, 176, 0.2);
+  padding: 10px
+}
+
+/* Inline component styles */
+.ginko-blocks-syntax-inline {  color: #9c27b0;
+  background: linear-gradient(to right, rgba(156, 39, 176, 0.08), rgba(156, 39, 176, 0.12));
+  border: 1px solid rgba(156, 39, 176, 0.2);
+  display: inline;
+  padding: 2px 4px;
+  font-size: 13px;
+  line-height: inherit;
+  vertical-align: baseline;
+}
+
 /* Props container with gradient */
 .ginko-blocks-syntax-props-container {
   display: inline-block;
