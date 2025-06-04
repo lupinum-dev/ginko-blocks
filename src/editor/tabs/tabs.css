@@ -147,3 +147,46 @@
   height: 16px;
   display: block;
 }
+
+/* Ensure the managed container itself doesn't add extra unexpected space if it was a P tag */
+.ginko-tabs-container-managed {
+  /* margin: 0; 
+     padding: 0; /* These might be needed if ::tabs was on a <p> tag */
+}
+
+/* Your existing .ginko-tabs-container styles might now apply to .ginko-tabs-container-managed directly
+   or to children created by TabsBlockManager.render(). 
+   The new TabsBlockManager.render() creates:
+   - .ginko-tab-buttons
+   - .ginko-tab-contents
+   So, styles targeting these should still work.
+*/
+
+.ginko-tabs-container, /* Keep for old processor if still in use during transition */
+.ginko-tabs-container-managed { /* Styles for the new managed container */
+  margin: -1rem 0; /* Example style from your original */
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 8px;
+  background: var(--background-primary);
+  overflow: hidden;
+  position: relative;
+}
+
+/* This class is added to original elements managed by the system before they are re-parented */
+.ginko-tab-managed-element-hidden {
+  display: none !important; /* Force hide */
+}
+
+/* Placeholder styling for empty/error states */
+.tabs-placeholder, .tabs-error {
+    padding: 1em;
+    text-align: center;
+    color: var(--text-muted);
+    border: 1px dashed var(--background-modifier-border);
+    margin: 0.5em;
+    border-radius: 4px;
+}
+.tabs-error {
+    color: var(--text-error);
+    border-color: var(--text-error);
+}

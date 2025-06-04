@@ -6,7 +6,7 @@ import { createFileTreeExtension } from './editor/file-tree/fileTreePostProcesso
 import { createGalleryPreviewExtension } from './editor/gallery/galleryPreviewExtension'
 import { createLayoutPreviewExtension } from './editor/layout/layoutPreviewExtension'
 import { createStepsPreviewExtension } from './editor/steps/stepsPreviewExtension'
-import { tabsProcessor } from './editor/tabs/tabsPostProcessor'
+import { TabsPostProcessor } from './editor/tabs/tabsPostProcessor'; // Correct path to NEW file
 import { createTabPreviewExtension } from './editor/tabs/tabsPreviewExtension'
 import { DEFAULT_SETTINGS, GinkoBlocksSettingTab } from './settings/settings'
 import { CURRENT_WELCOME_VERSION, WELCOME_VIEW_TYPE, WelcomeView } from './welcome/welcomeView'
@@ -15,88 +15,90 @@ import { cleanupExpiredStates } from './editor/utils/blockState'
 // Remember to rename these classes and interfaces!
 
 export default class GinkoBlocksPlugin extends Plugin {
-  settings: GinkoBlocksSettings
+  settings: GinkoBlocksSettings;
+  private tabsPostProcessorInstance?: TabsPostProcessor; // Store instance
 
   async onload() {
-    // Clean up expired block states on plugin load
-    cleanupExpiredStates()
+    console.log("[GinkoBlocks] Plugin loading...");
+    cleanupExpiredStates();
+    await this.loadSettings();
 
-    await this.loadSettings()
-
-    // Register the welcome view type
     this.registerView(
       WELCOME_VIEW_TYPE,
       leaf => new WelcomeView(leaf),
-    )
+    );
 
-    this.registerEditorExtensions()
+    this.registerEditorExtensions(); // Keep your existing method
 
-    // Show welcome view on first load
-    await this.activateWelcomeView()
+    // Instantiate and register the NEW TabsPostProcessor
+    // Pass `this.app` to the constructor
+    this.tabsPostProcessorInstance = new TabsPostProcessor(this.app);
+    this.registerMarkdownPostProcessor(
+      (el, ctx) => this.tabsPostProcessorInstance!.process(el, ctx)
+    );
+    console.log("[GinkoBlocks] NEW TabsPostProcessor registered.");
 
-    // This adds a settings tab so the user can configure various aspects of the plugin
-    this.addSettingTab(new GinkoBlocksSettingTab(this.app, this))
+
+    // Replace your OLD tabsProcessor registration if it was separate:
+    // this.registerMarkdownPostProcessor(tabsProcessor); // REMOVE THIS LINE if it exists
+
+    await this.activateWelcomeView();
+    this.addSettingTab(new GinkoBlocksSettingTab(this.app, this));
+    console.log("[GinkoBlocks] Plugin loaded successfully.");
   }
 
   /**
    * Registers editor extensions
    */
   private registerEditorExtensions() {
-    this.registerEditorExtension(createTabPreviewExtension(this.app))
-    this.registerEditorExtension(createCalloutPreviewExtension(this.app))
-    this.registerMarkdownPostProcessor(tabsProcessor)
-    this.registerEditorExtension(syntaxHighlightField)
-    this.registerEditorExtension(createLayoutPreviewExtension(this.app))
-    this.registerEditorExtension(createStepsPreviewExtension(this.app))
-    // this.registerEditorExtension(createNoLineBreaksExtension());
-    this.registerEditorExtension(createGalleryPreviewExtension(this.app))
-    this.registerEditorExtension(createAspectPreviewExtension(this.app))
-    this.registerEditorExtension(createFileTreeExtension(this.app))
+    // Your existing registrations
+    this.registerEditorExtension(createTabPreviewExtension(this.app)); // Keep this for live preview
+    this.registerEditorExtension(createCalloutPreviewExtension(this.app));
+    // The OLD tabsProcessor is removed from here IF it was registered through this method
+    this.registerEditorExtension(syntaxHighlightField);
+    this.registerEditorExtension(createLayoutPreviewExtension(this.app));
+    this.registerEditorExtension(createStepsPreviewExtension(this.app));
+    this.registerEditorExtension(createGalleryPreviewExtension(this.app));
+    this.registerEditorExtension(createAspectPreviewExtension(this.app));
+    this.registerEditorExtension(createFileTreeExtension(this.app));
+    console.log("[GinkoBlocks] Base editor extensions registered.");
   }
 
   onunload() {
-    // Unregister the welcome view type by detaching leaves
-    this.app.workspace.detachLeavesOfType(WELCOME_VIEW_TYPE)
-
-    // Force editor refresh to clean up extensions
-    this.app.workspace.updateOptions()
+    console.log("[GinkoBlocks] Plugin unloading...");
+    this.app.workspace.detachLeavesOfType(WELCOME_VIEW_TYPE);
+    // Potentially add cleanup for GlobalTabsManager if needed, e.g., clearing all its file managers
+    // For now, Obsidian's unload should handle most DOM cleanup.
+    this.app.workspace.updateOptions(); // Force editor refresh
+    console.log("[GinkoBlocks] Plugin unloaded.");
   }
 
   async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData())
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
   }
 
   async saveSettings() {
-    await this.saveData(this.settings)
+    await this.saveData(this.settings);
   }
 
   async activateWelcomeView(forceShow = false) {
-    const storageKey = `ginko-blocks-welcome-shown-v${CURRENT_WELCOME_VERSION}`
-
-    // Don't show if user has already seen this version (unless forced)
+    const storageKey = `ginko-blocks-welcome-shown-v${CURRENT_WELCOME_VERSION}`;
     if (!forceShow && localStorage.getItem(storageKey)) {
-      return
+      return;
     }
-
-    const { workspace } = this.app
-
-    // First check if view is already open
-    const existingLeaves = workspace.getLeavesOfType(WELCOME_VIEW_TYPE)
+    const { workspace } = this.app;
+    const existingLeaves = workspace.getLeavesOfType(WELCOME_VIEW_TYPE);
     if (existingLeaves.length > 0) {
-      // A leaf with our view already exists, use that
-      workspace.revealLeaf(existingLeaves[0])
-      return
+      workspace.revealLeaf(existingLeaves[0]);
+      return;
     }
-
-    // Create a new leaf in the root split (main content area)
-    // Use 'split' parameter to ensure we create in the root split
-    const leaf = workspace.getLeaf(true)
+    const leaf = workspace.getLeaf(true);
     if (leaf) {
       await leaf.setViewState({
         type: WELCOME_VIEW_TYPE,
         active: true,
-      })
-      workspace.revealLeaf(leaf)
+      });
+      workspace.revealLeaf(leaf);
     }
   }
 }
